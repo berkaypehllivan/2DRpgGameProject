@@ -4,105 +4,127 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    private Animator anim;
-
-    private float xInput;
-    private int facingDir = 1;
-
-    private bool facingRight = true;
-
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float jumpForce;
+    #region Headers
+    [Header("Move Info")]
+    public float moveSpeed = 12f;
+    public float jumpForce;
 
     [Header("Dash Info")]
-    [SerializeField] private float dashDuration;
-    [SerializeField] private float dashTime;
-    [SerializeField] private float dashSpeed;
+    [SerializeField] private float dashCooldown;
+    private float dashUsageTimer;
+    public float dashSpeed;
+    public float dashDuration;
+    public float dashDir { get; private set; }
+
 
     [Header("Collision Info")]
+    [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckDistance;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private float wallCheckDistance;
     [SerializeField] private LayerMask whatIsGround;
-    private bool isGrounded;
 
-    void Start()
+    public int facingDir { get; private set; } = 1;
+    private bool facingRight = true;
+
+    #endregion
+
+    #region Components
+    public Animator anim { get; private set; }
+    public Rigidbody2D rb { get; private set; }
+
+    #endregion
+
+    #region States
+    public PlayerStateMachine stateMachine { get; private set; }
+
+    public PlayerIdleState idleState { get; private set; }
+
+    public PlayerMoveState moveState { get; private set; }
+    public PlayerJumpState jumpState { get; private set; }
+    public PlayerAirState airState { get; private set; }
+    public PlayerWallSlideState wallSlide { get; private set; }
+    public PlayerDashState dashState { get; private set; }
+    public PlayerWallJumpState wallJump { get; private set; }
+
+    #endregion
+
+    private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        stateMachine = new PlayerStateMachine();
+
+        idleState = new PlayerIdleState(this, stateMachine, "Idle");
+        moveState = new PlayerMoveState(this, stateMachine, "Move");
+        jumpState = new PlayerJumpState(this, stateMachine, "Jump");
+        airState = new PlayerAirState(this, stateMachine, "Jump");
+        dashState = new PlayerDashState(this, stateMachine, "Dash");
+        wallSlide = new PlayerWallSlideState(this, stateMachine, "WallSlide");
+        wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
+    }
+
+    private void Start()
+    {
         anim = GetComponentInChildren<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+
+        stateMachine.Initialize(idleState);
+
     }
-    void Update()
+
+    private void Update()
     {
-        Movement();
-        CheckInput();
-        CollisionChecks();
-        FlipController();
-        AnimatorControllers();
+        stateMachine.currentState.Update();
 
-        dashTime -= Time.deltaTime;
+        CheckForDashInput();
+    }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+    private void CheckForDashInput()
+    {
+        if (IsWallDetected())
+            return;
+
+        dashUsageTimer -= Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
         {
-            dashTime = dashDuration;
+            dashUsageTimer = dashCooldown;
+            dashDir = Input.GetAxisRaw("Horizontal");
+
+            if (dashDir == 0)
+                dashDir = facingDir;
+
+
+            stateMachine.ChangeState(dashState);
         }
     }
 
-    private void CollisionChecks()
+    public void SetVelocity(float _xVelocity, float _yVelocity)
     {
-        isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, whatIsGround);
+        rb.velocity = new Vector2(_xVelocity, _yVelocity);
+        FlipController(_xVelocity);
     }
 
-    private void CheckInput()
-    {
-        xInput = Input.GetAxisRaw("Horizontal");
+    public bool IsGroundDetected() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
+    public bool IsWallDetected() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
+        Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance, wallCheck.position.y));
     }
 
-    private void Movement()
-    {
-
-        if (dashTime > 0)
-            rb.velocity = new Vector2(xInput * dashSpeed, 0);
-        else
-            rb.velocity = new Vector2(xInput * moveSpeed, rb.velocity.y);
-    }
-
-    private void Jump()
-    {
-        if(isGrounded)
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-    }
-
-    private void AnimatorControllers()
-    {
-        bool isMoving = rb.velocity.x != 0;
-
-        anim.SetFloat("yVelocity", rb.velocity.y);
-        anim.SetBool("isMoving", isMoving);
-        anim.SetBool("isGrounded", isGrounded);
-        anim.SetBool("isDashing", dashTime > 0);
-    }
-
-    private void Flip()
+    public void Flip()
     {
         facingDir = facingDir * -1;
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
     }
 
-    private void FlipController()
+    public void FlipController(float _x)
     {
-        if (rb.velocity.x > 0 && !facingRight)
+        if (_x > 0 && !facingRight)
             Flip();
-        else if (rb.velocity.x < 0 && facingRight)
+        else if (_x < 0 && facingRight)
             Flip();
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(transform.position, new Vector3(transform.position.x, transform.position.y - groundCheckDistance));
     }
 }
