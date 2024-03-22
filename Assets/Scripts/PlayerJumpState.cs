@@ -7,11 +7,11 @@ public class PlayerJumpState : PlayerState
     public PlayerJumpState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
     {
     }
-
     public override void Enter()
     {
         base.Enter();
 
+        player.DoubleJump = true;
         rb.velocity = new Vector2(rb.velocity.x, player.jumpForce);
     }
 
@@ -24,7 +24,17 @@ public class PlayerJumpState : PlayerState
     {
         base.Update();
 
+        if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+        }
+
+        if (xInput != 0)
+            stateMachine.ChangeState(player.moveState);
+
         if (rb.velocity.y < 0)
+        {
             stateMachine.ChangeState(player.airState);
+        }
     }
 }

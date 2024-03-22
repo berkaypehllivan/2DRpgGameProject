@@ -13,7 +13,8 @@ public class PlayerWallJumpState : PlayerState
         base.Enter();
 
         stateTimer = .4f;
-        player.SetVelocity(5 * -player.facingDir, player.jumpForce);
+        player.SetVelocity(5 * -player.facingDir, player.jumpForce * 1.1f);
+        player.DoubleJump = false;
     }
 
     public override void Exit()

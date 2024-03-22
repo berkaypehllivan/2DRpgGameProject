@@ -28,7 +28,16 @@ public class PlayerAirState : PlayerState
         if (player.IsGroundDetected())
             stateMachine.ChangeState(player.idleState);
 
+        if (player.DoubleJump && Input.GetKeyDown(KeyCode.Space))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, player.jumpForce);
+            player.DoubleJump = false;
+        }
+
         if (xInput != 0)
             player.SetVelocity(player.moveSpeed * .8f * xInput, rb.velocity.y);
+
+        if (rb.velocity.y < 0)
+            rb.velocity -= player.vecGravity * player.fallMultiplier * Time.deltaTime / 2;
     }
 }
