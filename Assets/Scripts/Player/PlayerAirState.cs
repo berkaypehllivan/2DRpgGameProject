@@ -30,7 +30,7 @@ public class PlayerAirState : PlayerState
 
         if (player.DoubleJump && Input.GetKeyDown(KeyCode.Space))
         {
-            rb.velocity = new Vector2(rb.velocity.x, player.jumpForce);
+            rb.velocity = new Vector2(rb.velocity.x, player.jumpForce * 0.8f);
             player.DoubleJump = false;
         }
 
