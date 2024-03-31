@@ -8,6 +8,7 @@ public class Player : Entity
 
     [Header("Attack Details")]
     public Vector2[] attackMovement;
+    public float counterAttackDuration = .2f;
 
     #region Headers
     [Header("Move Info")]
@@ -17,13 +18,11 @@ public class Player : Entity
     public bool DoubleJump;
 
     [Header("Dash Info")]
-    [SerializeField] private float dashCooldown;
-    private float dashUsageTimer;
     public float dashSpeed;
     public float dashDuration;
     public float dashDir { get; private set; }
 
-
+    public SkillManager skill { get; private set; }
 
     #endregion
 
@@ -31,16 +30,14 @@ public class Player : Entity
 
     #region States
     public PlayerStateMachine stateMachine { get; private set; }
-
     public PlayerIdleState idleState { get; private set; }
-
     public PlayerMoveState moveState { get; private set; }
     public PlayerJumpState jumpState { get; private set; }
     public PlayerAirState airState { get; private set; }
     public PlayerWallSlideState wallSlide { get; private set; }
     public PlayerDashState dashState { get; private set; }
     public PlayerWallJumpState wallJump { get; private set; }
-
+    public PlayerCounterAttackState counterAttack { get; private set; }
     public PlayerPrimaryAttackState primaryAttack { get; private set; }
 
     #endregion
@@ -60,6 +57,7 @@ public class Player : Entity
         wallSlide = new PlayerWallSlideState(this, stateMachine, "WallSlide");
         wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
         primaryAttack = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
+        counterAttack = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
     }
 
     protected override void Start()
@@ -67,6 +65,8 @@ public class Player : Entity
         base.Start();
 
         stateMachine.Initialize(idleState);
+
+        skill = SkillManager.instance;
 
     }
 
@@ -90,18 +90,17 @@ public class Player : Entity
         if (IsWallDetected())
             return;
 
-        dashUsageTimer -= Time.deltaTime;
-
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && SkillManager.instance.dash.CanUseSkill())
         {
-            dashUsageTimer = dashCooldown;
             dashDir = Input.GetAxisRaw("Horizontal");
 
             if (dashDir == 0)
                 dashDir = facingDir;
 
-
             stateMachine.ChangeState(dashState);
+
+            if (SkillManager.instance.dash.CanUseSkill())
+                return;
         }
     }
 }

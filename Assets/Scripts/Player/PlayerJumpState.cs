@@ -26,11 +26,12 @@ public class PlayerJumpState : PlayerState
 
         if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
         {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            if (xInput != 0)
+            {
+                stateMachine.ChangeState(player.moveState);
+            }
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * .5f);
         }
-
-        if (xInput != 0)
-            stateMachine.ChangeState(player.moveState);
 
         if (rb.velocity.y < 0)
         {
