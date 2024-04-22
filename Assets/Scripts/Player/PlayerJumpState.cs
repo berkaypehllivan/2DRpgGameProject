@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class PlayerJumpState : PlayerState
 {
@@ -12,6 +13,7 @@ public class PlayerJumpState : PlayerState
         base.Enter();
 
         player.DoubleJump = true;
+
         rb.velocity = new Vector2(rb.velocity.x, player.jumpForce);
     }
 
@@ -26,11 +28,17 @@ public class PlayerJumpState : PlayerState
 
         if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
         {
-            if (xInput != 0)
-            {
-                stateMachine.ChangeState(player.moveState);
-            }
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * .5f);
+        }
+
+        if (xInput != 0)
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * .8f);
+            }
+
+            stateMachine.ChangeState(player.moveState);
         }
 
         if (rb.velocity.y < 0)
@@ -39,3 +47,4 @@ public class PlayerJumpState : PlayerState
         }
     }
 }
+
