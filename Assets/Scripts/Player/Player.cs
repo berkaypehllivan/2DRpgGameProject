@@ -29,8 +29,6 @@ public class Player : Entity
 
     #endregion
 
-
-
     #region States
     public PlayerStateMachine stateMachine { get; private set; }
     public PlayerIdleState idleState { get; private set; }
@@ -118,6 +116,14 @@ public class Player : Entity
 
             if (SkillManager.instance.dash.CanUseSkill())
                 return;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            PlayerDamage();
         }
     }
 }

@@ -23,6 +23,7 @@ public class Entity : MonoBehaviour
     [SerializeField] protected float knockbackDuration;
     [SerializeField] protected Vector2 knockbackDirection;
     protected bool isKnocked;
+    protected bool isCooldown;
 
 
     #region Components
@@ -51,11 +52,26 @@ public class Entity : MonoBehaviour
 
     }
 
+    public virtual void PlayerDamage()
+    {
+        if (!isCooldown)
+        {
+            StartCoroutine("DamageCooldown");
+            fx.StartCoroutine("FlashFX");
+            StartCoroutine("HitKnockback");
+        }
+    }
     public virtual void Damage()
     {
         fx.StartCoroutine("FlashFX");
         StartCoroutine("HitKnockback");
-        Debug.Log(gameObject.name + " was damaged");
+    }
+
+    public virtual IEnumerator DamageCooldown()
+    {
+        isCooldown = true;
+        yield return new WaitForSeconds(.5f);
+        isCooldown = false;
     }
 
     public virtual IEnumerator HitKnockback()
