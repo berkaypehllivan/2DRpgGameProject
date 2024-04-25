@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Enemy : Entity
 {
+    public EnemySkeleton enemy;
     [Header("Stunned Info")]
     public float stunDuration;
     public Vector2 stunDirection;
@@ -33,6 +34,8 @@ public class Enemy : Entity
         stateMachine = new EnemyStateMachine();
 
         defaultMoveSpeed = moveSpeed;
+
+        enemy = GetComponent<EnemySkeleton>();
     }
 
     protected override void Update()
@@ -48,11 +51,13 @@ public class Enemy : Entity
         {
             moveSpeed = 0;
             anim.speed = 0;
+            enemy.fx.InvokeRepeating("RedColorBlink", 0, .25f);
         }
         else
         {
             moveSpeed = defaultMoveSpeed;
             anim.speed = 1;
+            enemy.fx.Invoke("CancelRedBlink", 0);
         }
     }
 

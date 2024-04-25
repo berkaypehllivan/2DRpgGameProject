@@ -31,6 +31,7 @@ public class Entity : MonoBehaviour
     public Rigidbody2D rb { get; private set; }
     public Vector2 vecGravity { get; private set; }
     public EntityFX fx { get; private set; }
+    public SpriteRenderer sr { get; private set; }
 
     #endregion
 
@@ -44,6 +45,8 @@ public class Entity : MonoBehaviour
         fx = GetComponent<EntityFX>();
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponentInChildren<SpriteRenderer>();
+
         vecGravity = new Vector2(0, -Physics2D.gravity.y);
     }
 
@@ -67,7 +70,7 @@ public class Entity : MonoBehaviour
         StartCoroutine("HitKnockback");
     }
 
-    public virtual IEnumerator DamageCooldown()
+    private IEnumerator DamageCooldown()
     {
         isCooldown = true;
         yield return new WaitForSeconds(.5f);
@@ -83,6 +86,14 @@ public class Entity : MonoBehaviour
         isKnocked = false;
     }
 
+    public void MakeTransparent(bool _transparent)
+    {
+        if (_transparent)
+            sr.color = Color.clear;
+        else
+            sr.color = Color.white;
+    }
+
     #region Collision
     public virtual bool IsGroundDetected() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
     public virtual bool IsWallDetected() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
@@ -94,7 +105,6 @@ public class Entity : MonoBehaviour
         Gizmos.DrawWireSphere(attackCheck.position, attackCheckRadius);
     }
     #endregion
-
 
     #region Flip
     public virtual void Flip()

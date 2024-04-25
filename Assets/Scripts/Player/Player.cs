@@ -42,6 +42,7 @@ public class Player : Entity
     public PlayerPrimaryAttackState primaryAttack { get; private set; }
     public PlayerAimSwordState aimSword { get; private set; }
     public PlayerCatchSwordState catchSword { get; private set; }
+    public PlayerBlackholeState blackHole { get; private set; }
 
     #endregion
 
@@ -63,6 +64,7 @@ public class Player : Entity
         counterAttack = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
         aimSword = new PlayerAimSwordState(this, stateMachine, "AimSword");
         catchSword = new PlayerCatchSwordState(this, stateMachine, "CatchSword");
+        blackHole = new PlayerBlackholeState(this, stateMachine, "Jump");
     }
 
     protected override void Start()
@@ -94,12 +96,14 @@ public class Player : Entity
         stateMachine.ChangeState(catchSword);
         Destroy(sword);
     }
+
     public IEnumerator BusyFor(float _seconds)
     {
         isBusy = true;
         yield return new WaitForSeconds(_seconds);
         isBusy = false;
     }
+
     private void CheckForDashInput()
     {
         if (IsWallDetected())
@@ -123,7 +127,13 @@ public class Player : Entity
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            Vector2 originalKnockback = knockbackDirection;
+
+            knockbackDirection = new Vector2(knockbackDirection.x * 2.5f, knockbackDirection.y);
+
             PlayerDamage();
+
+            knockbackDirection = originalKnockback;
         }
     }
 }

@@ -22,6 +22,12 @@ public class PlayerAirState : PlayerState
     {
         base.Update();
 
+        if (Input.GetKeyDown(KeyCode.R))
+            stateMachine.ChangeState(player.blackHole);
+
+        if (Input.GetKeyDown(KeyCode.Mouse1) && HasNoSword())
+            stateMachine.ChangeState(player.aimSword);
+
         if (player.IsWallDetected())
             stateMachine.ChangeState(player.wallSlide);
 
@@ -39,5 +45,14 @@ public class PlayerAirState : PlayerState
 
         if (rb.velocity.y < 0)
             rb.velocity -= player.vecGravity * player.fallMultiplier * Time.deltaTime / 2;
+    }
+
+    private bool HasNoSword()
+    {
+        if (!player.sword)
+            return true;
+
+        player.sword.GetComponent<Sword_Skill_Controller>().ReturnSword();
+        return false;
     }
 }

@@ -32,7 +32,7 @@ public class SwordSkill : Skill
     [SerializeField] private GameObject swordPrefab;
     [SerializeField] private Vector2 launchForce;
     [SerializeField] private float swordGravity;
-    [SerializeField] private float freezeTimeDuration;
+    [SerializeField] public float freezeTimeDuration;
     [SerializeField] private float returnSpeed;
 
     private Vector2 finalDir;
