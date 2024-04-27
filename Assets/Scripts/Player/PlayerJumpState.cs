@@ -12,8 +12,6 @@ public class PlayerJumpState : PlayerState
     {
         base.Enter();
 
-        player.DoubleJump = true;
-
         rb.velocity = new Vector2(rb.velocity.x, player.jumpForce);
     }
 
@@ -26,25 +24,35 @@ public class PlayerJumpState : PlayerState
     {
         base.Update();
 
+        // Space tuþu býrakýldýðýnda ve hala yükseliyorsa zýplama kuvvetini azalt
         if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * .5f);
         }
 
+        // Eðer xInput sýfýr deðilse, yatay hareketi güncelle
         if (xInput != 0)
         {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * .8f);
-            }
+            // Yatay hareket
+            rb.velocity = new Vector2(xInput * player.moveSpeed, rb.velocity.y);
 
-            stateMachine.ChangeState(player.moveState);
+            // Karakterin yönünü güncellemek için kontrol
+            if (xInput > 0 && player.facingDir != 1)
+            {
+                player.Flip(); // Saða bakýyorsa ve sol tarafa gitmek istiyorsa
+            }
+            else if (xInput < 0 && player.facingDir == 1)
+            {
+                player.Flip(); // Sol tarafa bakýyorsa ve saða gitmek istiyorsa
+            }
         }
 
+        // Düþüþe geçtiðinde, hava durumuna geçiþ yap
         if (rb.velocity.y < 0)
         {
             stateMachine.ChangeState(player.airState);
         }
     }
+
 }
 

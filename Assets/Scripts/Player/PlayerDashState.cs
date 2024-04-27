@@ -12,8 +12,8 @@ public class PlayerDashState : PlayerState
     {
         base.Enter();
 
-        player.skill.clone.CreateClone(player.transform, new Vector3(0, 0));
-        player.col.enabled = false;
+        player.skill.clone.CreateCloneOnDashStart();
+        player.skill.dash.CanInvincibleOnDash();
         stateTimer = player.dashDuration;
     }
 
@@ -21,6 +21,7 @@ public class PlayerDashState : PlayerState
     {
         base.Exit();
 
+        player.skill.clone.CreateCloneOnDashOver();
         player.col.enabled = true;
         player.SetVelocity(0, rb.velocity.y);
     }

@@ -13,7 +13,7 @@ public class PlayerWallJumpState : PlayerState
         base.Enter();
 
         stateTimer = .4f;
-        player.SetVelocity(5 * -player.facingDir, player.jumpForce * 1.1f);
+        player.SetVelocity(5 * -player.facingDir, player.jumpForce);
         player.DoubleJump = false;
     }
 
@@ -31,5 +31,7 @@ public class PlayerWallJumpState : PlayerState
 
         if (player.IsGroundDetected())
             stateMachine.ChangeState(player.idleState);
+
+
     }
 }

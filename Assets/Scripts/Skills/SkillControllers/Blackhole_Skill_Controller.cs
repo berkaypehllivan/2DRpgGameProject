@@ -36,6 +36,9 @@ public class Blackhole_Skill_Controller : MonoBehaviour
         amountOfAttacks = _amountOfAttacks;
         cloneAttackCooldown = _cloneAttackCooldown;
         blackholeTimer = _blackholeDuration;
+
+        if (SkillManager.instance.clone.crystalInsteadOfClone)
+            playerCanDissapear = false;
     }
 
     private void Update()
@@ -91,16 +94,23 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
     private void CloneAttackLogic()
     {
-        if (cloneAttackTimer < 0 && cloneAttackReleased && amountOfAttacks > 0)
+        if (targets != null && targets.Count > 0 && cloneAttackTimer < 0 && cloneAttackReleased && amountOfAttacks > 0)
         {
             cloneAttackTimer = cloneAttackCooldown;
 
             int randomIndex = Random.Range(0, targets.Count);
 
             float xOffset = (Random.Range(0, 100) > 50) ? 1.5f : -1.5f;
+            if (SkillManager.instance.clone.crystalInsteadOfClone)
+            {
+                SkillManager.instance.crystal.CreateCrystal();
+                SkillManager.instance.crystal.CurrentCrystalChooseRandomTarget();
+            }
+            else
+                SkillManager.instance.clone.CreateClone(targets[randomIndex], new Vector3(xOffset, 0));
 
-            SkillManager.instance.clone.CreateClone(targets[randomIndex], new Vector3(xOffset, 0));
             amountOfAttacks--;
+
 
             if (amountOfAttacks <= 0)
             {
@@ -119,14 +129,18 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
     private void DestroyHotKeys()
     {
-        if (createdHotKey.Count <= 0)
-            return;
-
-        for (int i = 0; i < createdHotKey.Count; i++)
+        if (createdHotKey != null && createdHotKey.Count > 0)
         {
-            Destroy(createdHotKey[i]);
+            for (int i = 0; i < createdHotKey.Count; i++)
+            {
+                if (createdHotKey[i] != null) // Null kontrolü
+                    Destroy(createdHotKey[i]);
+            }
+
+            createdHotKey.Clear(); // Listeyi temizleyin
         }
     }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -163,4 +177,11 @@ public class Blackhole_Skill_Controller : MonoBehaviour
     }
 
     public void AddEnemyToList(Transform _enemyTransform) => targets.Add(_enemyTransform);
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, maxSize); // Blackhole'in büyüklüðünü görselleþtirin
+    }
+
 }

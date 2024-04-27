@@ -11,7 +11,9 @@ public class PlayerGroundedState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        player.DoubleJump = true;
+
+        if (player.canDoubleJump)
+            player.DoubleJump = true;
 
     }
 

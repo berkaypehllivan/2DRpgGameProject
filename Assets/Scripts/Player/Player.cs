@@ -12,6 +12,8 @@ public class Player : Entity
 
     #region Headers
     [Header("Move Info")]
+    public bool canDoubleJump;
+    [Space]
     public float moveSpeed = 12f;
     public float jumpForce;
     public float fallMultiplier;
@@ -43,6 +45,7 @@ public class Player : Entity
     public PlayerAimSwordState aimSword { get; private set; }
     public PlayerCatchSwordState catchSword { get; private set; }
     public PlayerBlackholeState blackHole { get; private set; }
+    public PlayerDoubleJumpState doubleJump { get; private set; }
 
     #endregion
 
@@ -57,14 +60,15 @@ public class Player : Entity
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         jumpState = new PlayerJumpState(this, stateMachine, "Jump");
         airState = new PlayerAirState(this, stateMachine, "Jump");
+        blackHole = new PlayerBlackholeState(this, stateMachine, "Jump");
+        doubleJump = new PlayerDoubleJumpState(this, stateMachine, "Jump");
+        wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
         wallSlide = new PlayerWallSlideState(this, stateMachine, "WallSlide");
-        wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
         primaryAttack = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
         counterAttack = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
         aimSword = new PlayerAimSwordState(this, stateMachine, "AimSword");
         catchSword = new PlayerCatchSwordState(this, stateMachine, "CatchSword");
-        blackHole = new PlayerBlackholeState(this, stateMachine, "Jump");
     }
 
     protected override void Start()
@@ -84,6 +88,8 @@ public class Player : Entity
         stateMachine.currentState.Update();
         CheckForDashInput();
 
+        if (Input.GetKeyDown(KeyCode.F))
+            skill.crystal.CanUseSkill();
     }
 
     public void AssignNewSword(GameObject _newSword)

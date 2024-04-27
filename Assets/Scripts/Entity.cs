@@ -100,10 +100,17 @@ public class Entity : MonoBehaviour
 
     protected virtual void OnDrawGizmos()
     {
+
+        // GroundCheck için raycast çizgisi
         Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
-        Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance, wallCheck.position.y));
+
+        // WallCheck için raycast çizgisi
+        Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance * facingDir, wallCheck.position.y));
+
+        // AttackCheck için bir daire
         Gizmos.DrawWireSphere(attackCheck.position, attackCheckRadius);
     }
+
     #endregion
 
     #region Flip
