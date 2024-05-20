@@ -15,6 +15,7 @@ public class PlayerDoubleJumpState : PlayerState
 
         rb.velocity = new Vector2(rb.velocity.x, player.jumpForce * 1f);
         player.DoubleJump = false;
+        player.coyoteTimeCounter = 0f;
 
     }
 

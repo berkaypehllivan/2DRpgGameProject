@@ -25,6 +25,8 @@ public class Entity : MonoBehaviour
     protected bool isKnocked;
     protected bool isCooldown;
 
+    public System.Action onFlipped;
+
 
     #region Components
     public Animator anim { get; private set; }
@@ -32,7 +34,8 @@ public class Entity : MonoBehaviour
     public Vector2 vecGravity { get; private set; }
     public EntityFX fx { get; private set; }
     public SpriteRenderer sr { get; private set; }
-
+    public Character_Stats stats { get; private set; }
+    public CapsuleCollider2D cd { get; private set; }
     #endregion
 
     protected virtual void Awake()
@@ -46,6 +49,8 @@ public class Entity : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponentInChildren<SpriteRenderer>();
+        stats = GetComponent<Character_Stats>();
+        cd = GetComponent<CapsuleCollider2D>();
 
         vecGravity = new Vector2(0, -Physics2D.gravity.y);
     }
@@ -55,25 +60,25 @@ public class Entity : MonoBehaviour
 
     }
 
-    public virtual void PlayerDamage()
+    public virtual void SlowEntityBy(float _slowPercentage, float _slowDuration)
+    {
+
+    }
+
+    protected virtual void ReturnDefaultSpeed() => anim.speed = 1;
+    public virtual void DamageImpact()
     {
         if (!isCooldown)
         {
             StartCoroutine("DamageCooldown");
-            fx.StartCoroutine("FlashFX");
             StartCoroutine("HitKnockback");
         }
-    }
-    public virtual void Damage()
-    {
-        fx.StartCoroutine("FlashFX");
-        StartCoroutine("HitKnockback");
     }
 
     private IEnumerator DamageCooldown()
     {
         isCooldown = true;
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.3f);
         isCooldown = false;
     }
 
@@ -84,14 +89,6 @@ public class Entity : MonoBehaviour
 
         yield return new WaitForSeconds(knockbackDuration);
         isKnocked = false;
-    }
-
-    public void MakeTransparent(bool _transparent)
-    {
-        if (_transparent)
-            sr.color = Color.clear;
-        else
-            sr.color = Color.white;
     }
 
     #region Collision
@@ -119,6 +116,9 @@ public class Entity : MonoBehaviour
         facingDir = facingDir * -1;
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
+
+        if (onFlipped != null)
+            onFlipped();
     }
 
     public virtual void FlipController(float _x)
@@ -148,5 +148,10 @@ public class Entity : MonoBehaviour
         FlipController(_xVelocity);
     }
     #endregion
+
+    public virtual void Die()
+    {
+
+    }
 }
 

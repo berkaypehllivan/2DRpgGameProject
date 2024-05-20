@@ -7,6 +7,7 @@ public class SkeletonBattleState : EnemyState
     private Transform player;
     private int moveDir;
 
+    private Player myPlayer;
     private EnemySkeleton enemy;
     public SkeletonBattleState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animBoolName, EnemySkeleton _enemy) : base(_enemyBase, _stateMachine, _animBoolName)
     {
@@ -18,6 +19,8 @@ public class SkeletonBattleState : EnemyState
         base.Enter();
 
         player = PlayerManager.instance.player.transform;
+
+        myPlayer = PlayerManager.instance.player;
     }
 
     public override void Exit()
@@ -29,6 +32,11 @@ public class SkeletonBattleState : EnemyState
     {
         base.Update();
 
+        if (myPlayer.isDead)
+        {
+            stateMachine.ChangeState(enemy.moveState);
+            return;
+        }
         if (enemy.IsPlayerDetected())
         {
             stateTimer = enemy.battleTime;
@@ -43,13 +51,17 @@ public class SkeletonBattleState : EnemyState
             if (stateTimer < 0 || Vector2.Distance(player.transform.position, enemy.transform.position) > 10)
                 stateMachine.ChangeState(enemy.idleState);
         }
+        UpdateMoveDirection();
 
+        enemy.SetVelocity(enemy.moveSpeed * moveDir, rb.velocity.y);
+    }
+
+    private void UpdateMoveDirection()
+    {
         if (player.position.x > enemy.transform.position.x)
             moveDir = 1;
         else if (player.position.x < enemy.transform.position.x)
             moveDir = -1;
-
-        enemy.SetVelocity(enemy.moveSpeed * moveDir, rb.velocity.y);
     }
 
     private bool canAttack()

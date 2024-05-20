@@ -6,26 +6,40 @@ using UnityEngine.EventSystems;
 public class Player : Entity
 {
 
+    #region Headers
+
     [Header("Attack Details")]
     public Vector2[] attackMovement;
     public float counterAttackDuration = .2f;
+    private int touchDamage = 15;
+    public bool isDead = false;
 
-    #region Headers
     [Header("Move Info")]
-    public bool canDoubleJump;
-    [Space]
     public float moveSpeed = 12f;
-    public float jumpForce;
-    public float fallMultiplier;
+    private float defaultMoveSpeed;
     public float swordReturnImpact;
-    public bool DoubleJump;
+
+    [Header("Jump Info")]
+    public bool canDoubleJump;
+    public bool canWallJump;
+    public float jumpForce;
+    private float defaultJumpForce;
+    [HideInInspector] public float fallMultiplier;
+    [HideInInspector] public float coyoteTime = 0.2f;
+    [HideInInspector] public float coyoteTimeCounter;
+    [HideInInspector] public bool DoubleJump;
+
 
     [Header("Dash Info")]
-    public Collider2D col;
+    public bool canDash;
+    public bool canInvincibleOnDash;
     public float dashSpeed;
     public float dashDuration;
-    public float dashDir { get; private set; }
+    private float defaultDashSpeed;
 
+    [HideInInspector] public Collider2D col;
+
+    public float dashDir { get; private set; }
     public SkillManager skill { get; private set; }
     public GameObject sword { get; private set; }
 
@@ -46,11 +60,15 @@ public class Player : Entity
     public PlayerCatchSwordState catchSword { get; private set; }
     public PlayerBlackholeState blackHole { get; private set; }
     public PlayerDoubleJumpState doubleJump { get; private set; }
+    public PlayerDeathState deathState { get; private set; }
 
     #endregion
 
     public bool isBusy { get; private set; }
     public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
+
+
+
     protected override void Awake()
     {
         base.Awake();
@@ -69,6 +87,7 @@ public class Player : Entity
         counterAttack = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
         aimSword = new PlayerAimSwordState(this, stateMachine, "AimSword");
         catchSword = new PlayerCatchSwordState(this, stateMachine, "CatchSword");
+        deathState = new PlayerDeathState(this, stateMachine, "Die");
     }
 
     protected override void Start()
@@ -78,6 +97,12 @@ public class Player : Entity
         stateMachine.Initialize(idleState);
 
         skill = SkillManager.instance;
+
+        col = GetComponent<CapsuleCollider2D>();
+
+        defaultMoveSpeed = moveSpeed;
+        defaultJumpForce = jumpForce;
+        defaultDashSpeed = dashSpeed;
 
     }
 
@@ -90,6 +115,26 @@ public class Player : Entity
 
         if (Input.GetKeyDown(KeyCode.F))
             skill.crystal.CanUseSkill();
+
+        if (!IsGroundDetected())
+            coyoteTimeCounter -= Time.deltaTime;
+    }
+    public override void SlowEntityBy(float _slowPercentage, float _slowDuration)
+    {
+        moveSpeed = moveSpeed * (1 - _slowPercentage);
+        jumpForce = jumpForce * (1 - _slowPercentage);
+        dashSpeed = dashSpeed * (1 - _slowPercentage);
+        anim.speed = anim.speed * (1 - _slowPercentage);
+
+        Invoke("ReturnDefaultSpeed", _slowDuration);
+    }
+    protected override void ReturnDefaultSpeed()
+    {
+        base.ReturnDefaultSpeed();
+
+        moveSpeed = defaultMoveSpeed;
+        jumpForce = defaultJumpForce;
+        dashSpeed = defaultDashSpeed;
     }
 
     public void AssignNewSword(GameObject _newSword)
@@ -115,7 +160,7 @@ public class Player : Entity
         if (IsWallDetected())
             return;
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && SkillManager.instance.dash.CanUseSkill())
+        if (Input.GetKeyDown(KeyCode.LeftShift) && SkillManager.instance.dash.CanUseSkill() && canDash)
         {
             dashDir = Input.GetAxisRaw("Horizontal");
 
@@ -131,15 +176,25 @@ public class Player : Entity
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+
+        if (collision.gameObject.CompareTag("Enemy") && !isDead)
         {
             Vector2 originalKnockback = knockbackDirection;
 
             knockbackDirection = new Vector2(knockbackDirection.x * 2.5f, knockbackDirection.y);
 
-            PlayerDamage();
+            stats.TakeDamage(touchDamage);
 
             knockbackDirection = originalKnockback;
         }
+    }
+
+    public override void Die()
+    {
+        base.Die();
+
+        stateMachine.ChangeState(deathState);
+        isDead = true;
+
     }
 }

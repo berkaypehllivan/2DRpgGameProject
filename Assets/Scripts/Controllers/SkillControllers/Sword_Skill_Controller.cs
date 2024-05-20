@@ -125,8 +125,6 @@ public class Sword_Skill_Controller : MonoBehaviour
             SwordDamage(enemy);
         }
 
-        collision.GetComponent<Enemy>()?.Damage();
-
         SetupTargetsForBounce(collision);
 
         StuckInto(collision);
@@ -134,7 +132,7 @@ public class Sword_Skill_Controller : MonoBehaviour
 
     private void SwordDamage(Enemy enemy)
     {
-        enemy.Damage();
+        player.stats.DoDamage(enemy.GetComponent<Character_Stats>());
         enemy.StartCoroutine("FreezeTimerFor", freezeTimeDuration);
     }
 

@@ -88,7 +88,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
         if (playerCanDissapear)
         {
             playerCanDissapear = false;
-            PlayerManager.instance.player.MakeTransparent(true);
+            PlayerManager.instance.player.fx.MakeTransparent(true);
         }
     }
 
@@ -177,6 +177,8 @@ public class Blackhole_Skill_Controller : MonoBehaviour
     }
 
     public void AddEnemyToList(Transform _enemyTransform) => targets.Add(_enemyTransform);
+
+    public void RemoveEnemyToList(Transform _enemyTransform) => targets.Remove(_enemyTransform);
 
     private void OnDrawGizmos()
     {

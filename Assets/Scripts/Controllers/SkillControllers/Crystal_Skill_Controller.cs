@@ -9,12 +9,14 @@ public class Crystal_Skill_Controller : MonoBehaviour
     private bool canGrow;
     private float growSpeed = 5;
     private CircleCollider2D cd => GetComponent<CircleCollider2D>();
+    private Player player;
 
     public Animator anim => GetComponent<Animator>();
     private Transform closestEnemy;
     [SerializeField] private LayerMask whatIsEnemy;
-    public void SetupCrystal(float _crystalDuration, bool _canExplode, bool _canMove, float _moveSpeed, Transform _closestEnemy)
+    public void SetupCrystal(float _crystalDuration, bool _canExplode, bool _canMove, float _moveSpeed, Transform _closestEnemy, Player _player)
     {
+        player = _player;
         crystalExitsTimer = _crystalDuration;
         canExplode = _canExplode;
         canMove = _canMove;
@@ -42,7 +44,7 @@ public class Crystal_Skill_Controller : MonoBehaviour
         if (canGrow)
             transform.localScale = Vector2.Lerp(transform.localScale, new Vector2(3, 3), growSpeed * Time.deltaTime);
 
-        if (canMove && closestEnemy != null) // closestEnemy'nin null olup olmadýðýný kontrol et
+        if (canMove && closestEnemy != null)
         {
             transform.position = Vector2.MoveTowards(transform.position, closestEnemy.position, moveSpeed * Time.deltaTime);
 
@@ -62,7 +64,7 @@ public class Crystal_Skill_Controller : MonoBehaviour
         foreach (var hit in colliders)
         {
             if (hit.GetComponent<Enemy>() != null)
-                hit.GetComponent<Enemy>().Damage();
+                player.stats.DoMagicalDamage(hit.GetComponent<Character_Stats>());
         }
     }
 

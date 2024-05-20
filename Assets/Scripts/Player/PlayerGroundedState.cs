@@ -15,6 +15,8 @@ public class PlayerGroundedState : PlayerState
         if (player.canDoubleJump)
             player.DoubleJump = true;
 
+        player.coyoteTimeCounter = player.coyoteTime;
+
     }
 
     public override void Exit()

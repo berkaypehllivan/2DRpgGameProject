@@ -22,16 +22,27 @@ public class PlayerWallSlideState : PlayerState
     {
         base.Update();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && player.canWallJump)
         {
             stateMachine.ChangeState(player.wallJump);
             return;
         }
-        else if (player.DoubleJump && Input.GetKeyDown(KeyCode.Space))
+        else if (player.DoubleJump && Input.GetKeyDown(KeyCode.Space) && player.canWallJump)
         {
             stateMachine.ChangeState(player.wallJump);
             player.DoubleJump = false;
             return;
+        }
+
+        if (xInput != 0)
+        {
+            rb.velocity = new Vector2(xInput * player.moveSpeed, rb.velocity.y);
+
+            if (xInput > 0 && player.facingDir != 1)
+                player.Flip();
+
+            else if (xInput < 0 && player.facingDir == 1)
+                player.Flip();
         }
 
         if (xInput != 0 && player.facingDir != xInput)
