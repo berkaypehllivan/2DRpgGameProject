@@ -12,7 +12,6 @@ public class Player : Entity
     public Vector2[] attackMovement;
     public float counterAttackDuration = .2f;
     private int touchDamage = 15;
-    public bool isDead = false;
 
     [Header("Move Info")]
     public float moveSpeed = 12f;
@@ -118,6 +117,9 @@ public class Player : Entity
 
         if (!IsGroundDetected())
             coyoteTimeCounter -= Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
+            Inventory.instance.UseFlask();
     }
     public override void SlowEntityBy(float _slowPercentage, float _slowDuration)
     {
@@ -160,7 +162,7 @@ public class Player : Entity
         if (IsWallDetected())
             return;
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && SkillManager.instance.dash.CanUseSkill() && canDash)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && SkillManager.instance.dash.CanUseSkill() && canDash && !stats.isDead)
         {
             dashDir = Input.GetAxisRaw("Horizontal");
 
@@ -177,7 +179,7 @@ public class Player : Entity
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
-        if (collision.gameObject.CompareTag("Enemy") && !isDead)
+        if (collision.gameObject.CompareTag("Enemy") && !stats.isDead)
         {
             Vector2 originalKnockback = knockbackDirection;
 
@@ -194,7 +196,6 @@ public class Player : Entity
         base.Die();
 
         stateMachine.ChangeState(deathState);
-        isDead = true;
 
     }
 }

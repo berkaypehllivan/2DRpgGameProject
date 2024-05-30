@@ -1,10 +1,23 @@
-using Unity.Mathematics;
+using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Character_Stats : MonoBehaviour
 {
+
+    #region Components
+
     private EntityFX fx;
+    private UI_HealthBar healthBarUI;
+
+    public int currentHealth;
+
+    [HideInInspector] public System.Action onHealthChanged;
+    [HideInInspector] public bool isDead { get; private set; }
+
+    #endregion
+
+    #region Stats
 
     [Header("Major Stats")]
     public Stat strength;
@@ -17,6 +30,9 @@ public class Character_Stats : MonoBehaviour
     public Stat critChange;
     public Stat critPower;
 
+    private int igniteDamage;
+    private int shockDamage;
+
     [Header("Deffensive Stats")]
     public Stat maxHealth;
     public Stat armor;
@@ -27,6 +43,10 @@ public class Character_Stats : MonoBehaviour
     public Stat fireDamage;
     public Stat iceDamage;
     public Stat lightingDamage;
+
+    #endregion
+
+    #region Variables
 
     public bool isIgnited;
     public bool isChilled;
@@ -39,14 +59,9 @@ public class Character_Stats : MonoBehaviour
 
     private float igniteDamageCooldown = .3f;
     private float igniteDamageTimer;
-    private int igniteDamage;
-    private int shockDamage;
-    [SerializeField] private GameObject thunderStrikePrefab;
+    [SerializeField] private GameObject shockStrikePrefab;
 
-    public int currentHealth;
-
-    public System.Action onHealthChanged;
-    protected bool isDead;
+    #endregion
 
     protected virtual void Start()
     {
@@ -54,6 +69,8 @@ public class Character_Stats : MonoBehaviour
         currentHealth = GetMaxHealthValue();
 
         fx = GetComponent<EntityFX>();
+
+        healthBarUI = GetComponentInChildren<UI_HealthBar>();
     }
 
     protected virtual void Update()
@@ -77,7 +94,19 @@ public class Character_Stats : MonoBehaviour
             ApplyIgniteDamage();
     }
 
+    public virtual void IncreaseStatBy(int _modifier, float _duration, Stat _statToModify)
+    {
+        StartCoroutine(StatModCoroutine(_modifier, _duration, _statToModify));
+    }
 
+    private IEnumerator StatModCoroutine(int _modifier, float _duration, Stat _statToModify)
+    {
+        _statToModify.AddModifier(_modifier);
+
+        yield return new WaitForSeconds(_duration);
+
+        _statToModify.RemoveModifier(_modifier);
+    }
 
     public virtual void DoDamage(Character_Stats _targetStats)
     {
@@ -94,20 +123,33 @@ public class Character_Stats : MonoBehaviour
         totalDamage = CheckTargetArmor(_targetStats, totalDamage);
         _targetStats.TakeDamage(totalDamage);
 
-        //DoMagicalDamage(_targetStats);
+        DoMagicalDamage(_targetStats); // remove if you don't want to apply magical hit on primary attack
     }
     public virtual void TakeDamage(int _damage)
     {
-        DecreaseHealthBy(_damage);
-
-        GetComponent<Entity>().DamageImpact();
-        fx.StartCoroutine("FlashFX");
+        if (!isDead)
+        {
+            DecreaseHealthBy(_damage);
+            healthBarUI.canvasGroup.alpha = 1;
+            GetComponent<Entity>().DamageImpact();
+            fx.StartCoroutine("FlashFX");
+        }
 
         if (currentHealth <= 0 && !isDead)
             Die();
-
-
     }
+
+    public virtual void IncreaseHealthBy(int _amount)
+    {
+        currentHealth += _amount;
+
+        if (currentHealth > GetMaxHealthValue())
+            currentHealth = GetMaxHealthValue();
+
+        if (onHealthChanged != null)
+            onHealthChanged();
+    }
+
     protected virtual void DecreaseHealthBy(int _damage)
     {
         currentHealth -= _damage;
@@ -246,9 +288,9 @@ public class Character_Stats : MonoBehaviour
 
         if (closestEnemy != null)
         {
-            GameObject newThunderStrike = Instantiate(thunderStrikePrefab, transform.position, Quaternion.identity);
+            GameObject newThunderStrike = Instantiate(shockStrikePrefab, transform.position, Quaternion.identity);
 
-            newThunderStrike.GetComponent<ThunderStrike_Controller>().Setup(shockDamage, closestEnemy.GetComponent<Character_Stats>());
+            newThunderStrike.GetComponent<ShockStrike_Controller>().Setup(shockDamage, closestEnemy.GetComponent<Character_Stats>());
         }
     }
     private void ApplyIgniteDamage()
@@ -267,7 +309,7 @@ public class Character_Stats : MonoBehaviour
     public void SetupShockDamage(int _damage) => shockDamage = _damage;
     #endregion
 
-    #region Stats Calculations
+    #region Stat Calculations
     private bool CanCrit()
     {
         int totalCriticalChange = critChange.GetValue() + agility.GetValue();
@@ -320,5 +362,7 @@ public class Character_Stats : MonoBehaviour
     protected virtual void Die()
     {
         isDead = true;
+
+        healthBarUI.canvasGroup.alpha = 0;
     }
 }

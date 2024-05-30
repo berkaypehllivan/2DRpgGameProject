@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime;
-using UnityEditor.Timeline;
 using UnityEngine;
 
 public class Sword_Skill_Controller : MonoBehaviour
@@ -133,7 +131,21 @@ public class Sword_Skill_Controller : MonoBehaviour
     private void SwordDamage(Enemy enemy)
     {
         player.stats.DoDamage(enemy.GetComponent<Character_Stats>());
-        enemy.StartCoroutine("FreezeTimerFor", freezeTimeDuration);
+
+        if (!enemy.stats.isDead)
+        {
+            enemy.FreezeTimeFor(freezeTimeDuration);
+        }
+        else
+        {
+            enemy.FreezeTime(false);
+            enemy.fx.Invoke("CancelColorChange", 0);
+        }
+
+        ItemData_Equipment equipedAmulet = Inventory.instance.GetEquipment(EquipmentType.Amulet);
+
+        if (equipedAmulet != null)
+            equipedAmulet.Effect(enemy.transform);
     }
 
     private void SpinLogic()

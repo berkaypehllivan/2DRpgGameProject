@@ -6,8 +6,6 @@ public class SkeletonBattleState : EnemyState
 {
     private Transform player;
     private int moveDir;
-
-    private Player myPlayer;
     private EnemySkeleton enemy;
     public SkeletonBattleState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animBoolName, EnemySkeleton _enemy) : base(_enemyBase, _stateMachine, _animBoolName)
     {
@@ -19,8 +17,6 @@ public class SkeletonBattleState : EnemyState
         base.Enter();
 
         player = PlayerManager.instance.player.transform;
-
-        myPlayer = PlayerManager.instance.player;
     }
 
     public override void Exit()
@@ -32,11 +28,13 @@ public class SkeletonBattleState : EnemyState
     {
         base.Update();
 
-        if (myPlayer.isDead)
+        if (player.GetComponent<Player_Stats>().isDead)
         {
             stateMachine.ChangeState(enemy.moveState);
             return;
         }
+
+
         if (enemy.IsPlayerDetected())
         {
             stateTimer = enemy.battleTime;
@@ -48,7 +46,7 @@ public class SkeletonBattleState : EnemyState
         }
         else
         {
-            if (stateTimer < 0 || Vector2.Distance(player.transform.position, enemy.transform.position) > 10)
+            if (stateTimer < 0 || Vector2.Distance(player.transform.position, enemy.transform.position) > 15)
                 stateMachine.ChangeState(enemy.idleState);
         }
         UpdateMoveDirection();

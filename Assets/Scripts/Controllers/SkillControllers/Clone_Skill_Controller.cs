@@ -42,7 +42,7 @@ public class Clone_Skill_Controller : MonoBehaviour
             anim.SetInteger("AttackNumber", Random.Range(1, 4));
 
         player = _player;
-        transform.position = _newTransform.position + _offset;
+        transform.position = _newTransform.position + _offset / 2;
         cloneTimer = _cloneDuration;
         canDuplicateClone = _canDuplicate;
         closestEnemy = _closestEnemy;
@@ -75,6 +75,7 @@ public class Clone_Skill_Controller : MonoBehaviour
 
     private void FaceClosestTarget()
     {
+
         if (closestEnemy != null)
         {
             if (transform.position.x > closestEnemy.position.x)

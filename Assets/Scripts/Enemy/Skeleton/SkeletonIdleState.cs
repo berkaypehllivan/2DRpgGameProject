@@ -12,6 +12,7 @@ public class SkeletonIdleState : SkeletonGroundedState
     {
         base.Enter();
         stateTimer = enemy.idleTime;
+        enemy.setZeroVelocity();
     }
 
     public override void Exit()

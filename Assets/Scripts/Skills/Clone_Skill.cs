@@ -41,7 +41,7 @@ public class Clone_Skill : Skill
     public void CreateCloneOnDashOver()
     {
         if (createCloneOnDashOver)
-            CreateClone(player.transform, Vector3.zero);
+            CreateClone(player.transform, -Vector3.zero);
     }
 
     public void CreateCloneOnCounterAttack(Transform _enemyTransform)

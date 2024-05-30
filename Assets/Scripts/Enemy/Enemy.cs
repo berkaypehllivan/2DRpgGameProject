@@ -64,28 +64,35 @@ public class Enemy : Entity
 
     public virtual void AssignLastAnimName(string _animBoolName) => lastAnimBoolName = _animBoolName;
 
-
     public virtual void FreezeTime(bool _timeFrozen)
     {
         if (_timeFrozen)
         {
             moveSpeed = 0;
             anim.speed = 0;
-            enemy.fx.InvokeRepeating("RedColorBlink", 0, .25f);
         }
         else
         {
             moveSpeed = defaultMoveSpeed;
             anim.speed = 1;
-            enemy.fx.Invoke("CancelColorChange", 0);
         }
     }
 
-    protected virtual IEnumerator FreezeTimerFor(float _seconds)
+    public virtual void FreezeTimeFor(float _duration) => StartCoroutine(FreezeTimerCoroutine(_duration));
+
+    protected virtual IEnumerator FreezeTimerCoroutine(float _seconds)
     {
         FreezeTime(true);
+
         yield return new WaitForSeconds(_seconds);
+
         FreezeTime(false);
+    }
+
+    public virtual void DestroyGameObject()
+    {
+        if (GetComponent<Enemy_Stats>().isDead)
+            Destroy(gameObject);
     }
 
     #region Counter Attack
@@ -114,7 +121,7 @@ public class Enemy : Entity
 
     public virtual void AnimationFinishTrigger() => stateMachine.currentState.AnimationFinishTrigger();
 
-    public virtual RaycastHit2D IsPlayerDetected() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, 50, whatIsPlayer);
+    public virtual RaycastHit2D IsPlayerDetected() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, 10, whatIsPlayer);
 
     protected override void OnDrawGizmos()
     {

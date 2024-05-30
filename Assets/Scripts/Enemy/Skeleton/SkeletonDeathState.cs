@@ -14,15 +14,20 @@ public class SkeletonDeathState : EnemyState
     {
         base.Enter();
 
-        stateTimer = 2f;
+        stateTimer = 4f;
     }
 
     public override void Update()
     {
         base.Update();
 
-        if (stateTimer < 0)
+        if (stateTimer < 2)
+        {
             enemy.cd.enabled = false;
+
+            if (stateTimer < 0)
+                enemy.DestroyGameObject();
+        }
 
     }
 }
