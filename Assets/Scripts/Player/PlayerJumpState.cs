@@ -34,7 +34,7 @@ public class PlayerJumpState : PlayerState
     {
         if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
         {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.4f);
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.3f);
         }
     }
 
@@ -43,10 +43,9 @@ public class PlayerJumpState : PlayerState
         if (xInput != 0)
         {
             rb.velocity = new Vector2(xInput * player.moveSpeed, rb.velocity.y);
+
             if ((xInput > 0 && player.facingDir != 1) || (xInput < 0 && player.facingDir == 1))
-            {
                 player.Flip();
-            }
         }
     }
 

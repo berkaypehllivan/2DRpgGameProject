@@ -130,19 +130,27 @@ public class Sword_Skill_Controller : MonoBehaviour
 
     private void SwordDamage(Enemy enemy)
     {
+        Enemy_Stats enemyStats = enemy.GetComponent<Enemy_Stats>();
+
         player.stats.DoDamage(enemy.GetComponent<Character_Stats>());
 
-        if (!enemy.stats.isDead)
+        ItemData_Equipment equipedAmulet = Inventory.instance.GetEquipment(EquipmentType.Amulet);
+
+        if (player.skill.sword.timeStopUnlocked)
         {
-            enemy.FreezeTimeFor(freezeTimeDuration);
-        }
-        else
-        {
-            enemy.FreezeTime(false);
-            enemy.fx.Invoke("CancelColorChange", 0);
+            if (!enemy.stats.isDead)
+            {
+                enemy.FreezeTimeFor(freezeTimeDuration);
+            }
+            else
+            {
+                enemy.FreezeTime(false);
+                enemy.fx.Invoke("CancelColorChange", 0);
+            }
         }
 
-        ItemData_Equipment equipedAmulet = Inventory.instance.GetEquipment(EquipmentType.Amulet);
+        if (player.skill.sword.vulnurableUnlocked)
+            enemyStats.MakeVulnerableFor(freezeTimeDuration);
 
         if (equipedAmulet != null)
             equipedAmulet.Effect(enemy.transform);

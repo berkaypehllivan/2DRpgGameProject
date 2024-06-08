@@ -3,7 +3,8 @@ guid: 05f3d91b77636404e8a81d5d6e12b4bb
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - thunderStrikePrefab: {fileID: 1856006273991683879, guid: 1e4782943997ad14a98719998421c64a, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

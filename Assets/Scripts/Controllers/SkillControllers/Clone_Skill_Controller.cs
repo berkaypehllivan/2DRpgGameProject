@@ -16,6 +16,7 @@ public class Clone_Skill_Controller : MonoBehaviour
     private int facingDir = 1;
 
     private float cloneTimer;
+    private float attackMultiplier;
     [SerializeField] private Transform attackCheck;
     [SerializeField] private float attackCheckRadius = .8f;
 
@@ -36,7 +37,7 @@ public class Clone_Skill_Controller : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void SetupClone(Transform _newTransform, float _cloneDuration, bool _canAttack, Vector3 _offset, Transform _closestEnemy, bool _canDuplicate, float _changeToDuplicate, Player _player)
+    public void SetupClone(Transform _newTransform, float _cloneDuration, bool _canAttack, Vector3 _offset, Transform _closestEnemy, bool _canDuplicate, float _changeToDuplicate, Player _player, float _attackMultiplier)
     {
         if (_canAttack)
             anim.SetInteger("AttackNumber", Random.Range(1, 4));
@@ -47,6 +48,7 @@ public class Clone_Skill_Controller : MonoBehaviour
         canDuplicateClone = _canDuplicate;
         closestEnemy = _closestEnemy;
         chanceToDuplicate = _changeToDuplicate;
+        attackMultiplier = _attackMultiplier;
 
         FaceClosestTarget();
     }
@@ -62,7 +64,20 @@ public class Clone_Skill_Controller : MonoBehaviour
         {
             if (hit.GetComponent<Enemy>() != null)
             {
-                player.stats.DoDamage(hit.GetComponent<Character_Stats>());
+                //player.stats.DoDamage(hit.GetComponent<Character_Stats>());
+
+                Player_Stats playerStats = player.GetComponent<Player_Stats>();
+                Enemy_Stats enemyStats = hit.GetComponent<Enemy_Stats>();
+
+                playerStats.CloneDoDamage(enemyStats, attackMultiplier);
+
+                if (player.skill.clone.canApplyOnHitEffect)
+                {
+                    ItemData_Equipment weaponData = Inventory.instance.GetEquipment(EquipmentType.Weapon);
+
+                    if (weaponData != null)
+                        weaponData.Effect(hit.transform);
+                }
 
                 if (canDuplicateClone)
                 {

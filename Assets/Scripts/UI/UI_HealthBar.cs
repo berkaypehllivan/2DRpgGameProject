@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class UI_HealthBar : MonoBehaviour
 {
     private Entity entity;
-    private Character_Stats myStats;
+    private Enemy_Stats enemyStats;
     private RectTransform myTransform;
     private Slider slider;
     public CanvasGroup canvasGroup;
@@ -15,24 +15,25 @@ public class UI_HealthBar : MonoBehaviour
         entity = GetComponentInParent<Entity>();
         myTransform = GetComponent<RectTransform>();
         slider = GetComponentInChildren<Slider>();
-        myStats = GetComponentInParent<Character_Stats>();
         canvasGroup = GetComponent<CanvasGroup>();
+        enemyStats = GetComponentInParent<Enemy_Stats>();
 
         entity.onFlipped += FlipUI;
-        myStats.onHealthChanged += UpdateHealthUI;
+        enemyStats.onHealthChanged += UpdateHealthUI;
 
         UpdateHealthUI();
     }
 
     private void UpdateHealthUI()
     {
-        slider.maxValue = myStats.GetMaxHealthValue();
-        slider.value = myStats.currentHealth;
+        slider.maxValue = enemyStats.GetMaxHealthValue();
+        slider.value = enemyStats.currentHealth;
 
-        if (myStats.currentHealth == myStats.GetMaxHealthValue())
-        {
+        if (enemyStats.currentHealth == enemyStats.GetMaxHealthValue())
             canvasGroup.alpha = 0;
-        }
+
+        if (enemyStats.currentHealth < 0)
+            gameObject.SetActive(false);
     }
 
 
@@ -42,6 +43,6 @@ public class UI_HealthBar : MonoBehaviour
     private void OnDisable()
     {
         entity.onFlipped -= FlipUI;
-        myStats.onHealthChanged -= UpdateHealthUI;
+        enemyStats.onHealthChanged -= UpdateHealthUI;
     }
 }

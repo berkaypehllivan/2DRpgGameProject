@@ -11,6 +11,9 @@ public class SkillManager : MonoBehaviour
     public SwordSkill sword { get; private set; }
     public Blackhole_Skill blackHole { get; private set; }
     public Crystal_Skill crystal { get; private set; }
+    public Parry_Skill parry { get; private set; }
+    public DoubleJump_Skill doubleJump { get; private set; }
+    public WallMoving_Skill wallMoving { get; private set; }
 
     private void Awake()
     {
@@ -26,5 +29,8 @@ public class SkillManager : MonoBehaviour
         sword = GetComponent<SwordSkill>();
         blackHole = GetComponent<Blackhole_Skill>();
         crystal = GetComponent<Crystal_Skill>();
+        parry = GetComponent<Parry_Skill>();
+        doubleJump = GetComponent<DoubleJump_Skill>();
+        wallMoving = GetComponent<WallMoving_Skill>();
     }
 }

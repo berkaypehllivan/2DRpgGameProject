@@ -6,7 +6,6 @@ using UnityEngine;
 public class Stat
 {
     [SerializeField] private int baseValue;
-
     public List<int> modifiers;
 
     public int GetValue()
@@ -35,4 +34,10 @@ public class Stat
     {
         baseValue = value;
     }
+
+    public bool IsAffectedByEquipment()
+    {
+        return modifiers.Count > 0;
+    }
 }
+

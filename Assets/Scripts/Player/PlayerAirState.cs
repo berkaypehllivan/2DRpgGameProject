@@ -26,24 +26,24 @@ public class PlayerAirState : PlayerState
         HandleStateTransitions();
         HandleMovementInput();
         ApplyGravity();
-        HandleJumpInput(); // HandleJumpInput metodunu Update metodunda çaðýrýyoruz.
+        HandleJumpInput();
     }
 
     private void HandleStateTransitions()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && player.skill.blackHole.blackHoleUnlocked)
         {
             stateMachine.ChangeState(player.blackHole);
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse1) && HasNoSword())
+        if (Input.GetKeyDown(KeyCode.Mouse1) && HasNoSword() && player.skill.sword.swordUnlocked)
         {
             stateMachine.ChangeState(player.aimSword);
             return;
         }
 
-        if (player.IsWallDetected())
+        if (player.IsWallDetected() && player.canWallSlide && player.skill.wallMoving.wallSlideUnlock)
         {
             stateMachine.ChangeState(player.wallSlide);
             return;
@@ -55,7 +55,7 @@ public class PlayerAirState : PlayerState
             return;
         }
 
-        if (player.DoubleJump && Input.GetKeyDown(KeyCode.Space))
+        if (player.DoubleJump && Input.GetKeyDown(KeyCode.Space) && player.skill.doubleJump.doubleJumpUnlocked)
         {
             stateMachine.ChangeState(player.doubleJump);
             return;

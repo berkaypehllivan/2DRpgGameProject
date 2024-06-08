@@ -20,18 +20,17 @@ public class Player : Entity
 
     [Header("Jump Info")]
     public bool canDoubleJump;
+    public bool canWallSlide;
     public bool canWallJump;
     public float jumpForce;
     private float defaultJumpForce;
-    [HideInInspector] public float fallMultiplier;
-    [HideInInspector] public float coyoteTime = 0.2f;
+    public float coyoteTime;
     [HideInInspector] public float coyoteTimeCounter;
-    [HideInInspector] public bool DoubleJump;
+    [HideInInspector] public float fallMultiplier;
+    public bool DoubleJump;
 
 
     [Header("Dash Info")]
-    public bool canDash;
-    public bool canInvincibleOnDash;
     public float dashSpeed;
     public float dashDuration;
     private float defaultDashSpeed;
@@ -66,8 +65,6 @@ public class Player : Entity
     public bool isBusy { get; private set; }
     public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
 
-
-
     protected override void Awake()
     {
         base.Awake();
@@ -87,6 +84,7 @@ public class Player : Entity
         aimSword = new PlayerAimSwordState(this, stateMachine, "AimSword");
         catchSword = new PlayerCatchSwordState(this, stateMachine, "CatchSword");
         deathState = new PlayerDeathState(this, stateMachine, "Die");
+
     }
 
     protected override void Start()
@@ -110,9 +108,10 @@ public class Player : Entity
         base.Update();
 
         stateMachine.currentState.Update();
+
         CheckForDashInput();
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F) && skill.crystal.crystalUnlocked)
             skill.crystal.CanUseSkill();
 
         if (!IsGroundDetected())
@@ -121,6 +120,7 @@ public class Player : Entity
         if (Input.GetKeyDown(KeyCode.LeftAlt))
             Inventory.instance.UseFlask();
     }
+
     public override void SlowEntityBy(float _slowPercentage, float _slowDuration)
     {
         moveSpeed = moveSpeed * (1 - _slowPercentage);
@@ -162,7 +162,10 @@ public class Player : Entity
         if (IsWallDetected())
             return;
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && SkillManager.instance.dash.CanUseSkill() && canDash && !stats.isDead)
+        if (!skill.dash.dashUnlocked)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && SkillManager.instance.dash.CanUseSkill() && !stats.isDead)
         {
             dashDir = Input.GetAxisRaw("Horizontal");
 

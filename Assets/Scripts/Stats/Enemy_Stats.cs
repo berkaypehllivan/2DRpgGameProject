@@ -55,6 +55,7 @@ public class Enemy_Stats : Character_Stats
     public override void TakeDamage(int _damage)
     {
         base.TakeDamage(_damage);
+        healthBarUI.canvasGroup.alpha = 1;
     }
 
     protected override void Die()

@@ -1,14 +1,11 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-
     public static Inventory instance;
 
     public List<ItemData> startingItems;
-
     public List<InventoryItem> equipment;
     public Dictionary<ItemData_Equipment, InventoryItem> equipmentDictionary;
 
@@ -22,17 +19,18 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Transform inventorySlotParent;
     [SerializeField] private Transform stashSlotParent;
     [SerializeField] private Transform equipmentSlotParent;
-
+    [SerializeField] private Transform statSlotParent;
 
     private UI_ItemSlot[] inventoryItemSlot;
     private UI_ItemSlot[] stashItemSlot;
     private UI_EquipmentSlot[] equipmentSlot;
+    private UI_StatSlot[] statSlot;
 
     [Header("Items cooldown")]
     private float lastTimeUsedFlask;
     private float lastTimeUsedArmor;
 
-    private float flaskCooldown;
+    public float flaskCooldown { get; private set; }
     private float armorCooldown;
 
     private void Awake()
@@ -57,6 +55,7 @@ public class Inventory : MonoBehaviour
         inventoryItemSlot = inventorySlotParent.GetComponentsInChildren<UI_ItemSlot>();
         stashItemSlot = stashSlotParent.GetComponentsInChildren<UI_ItemSlot>();
         equipmentSlot = equipmentSlotParent.GetComponentsInChildren<UI_EquipmentSlot>();
+        statSlot = statSlotParent.GetComponentsInChildren<UI_StatSlot>();
 
         AddStartingItems();
     }
@@ -65,7 +64,8 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < startingItems.Count; i++)
         {
-            AddItem(startingItems[i]);
+            if (startingItems[i] != null)
+                AddItem(startingItems[i]);
         }
     }
 
@@ -88,7 +88,6 @@ public class Inventory : MonoBehaviour
             AddItem(oldEquipment);
         }
 
-
         equipment.Add(newItem);
         equipmentDictionary.Add(newEquipment, newItem);
         newEquipment.AddModifiers();
@@ -105,6 +104,8 @@ public class Inventory : MonoBehaviour
             equipment.Remove(value);
             equipmentDictionary.Remove(itemToRemove);
             itemToRemove.RemoveModifiers();
+
+            UpdateSlotUI();
         }
     }
 
@@ -129,7 +130,6 @@ public class Inventory : MonoBehaviour
             stashItemSlot[i].CleanUpSlot();
         }
 
-
         for (int i = 0; i < inventory.Count; i++)
         {
             inventoryItemSlot[i].UpdateSlot(inventory[i]);
@@ -139,16 +139,24 @@ public class Inventory : MonoBehaviour
         {
             stashItemSlot[i].UpdateSlot(stash[i]);
         }
+
+        UpdateStatsUI();
+    }
+
+    public void UpdateStatsUI()
+    {
+        for (int i = 0; i < statSlot.Length; i++) // update info of stats in character UI
+        {
+            statSlot[i].UpdateStatValueUI();
+        }
     }
 
     public void AddItem(ItemData _item)
     {
-        if (_item.itemType == ItemType.Equipment)
+        if (_item.itemType == ItemType.Equipment && CanAddItem())
             AddToInventory(_item);
         else if (_item.itemType == ItemType.Material)
             AddToStash(_item);
-
-
 
         UpdateSlotUI();
     }
@@ -194,7 +202,6 @@ public class Inventory : MonoBehaviour
                 value.RemoveStack();
         }
 
-
         if (stashDictianory.TryGetValue(_item, out InventoryItem stashValue))
         {
             if (stashValue.stackSize <= 1)
@@ -209,12 +216,16 @@ public class Inventory : MonoBehaviour
         UpdateSlotUI();
     }
 
+    public bool CanAddItem()
+    {
+        return inventory.Count < inventoryItemSlot.Length;
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.L))
         {
             ItemData newItem = inventory[inventory.Count - 1].data;
-
             RemoveItem(newItem);
         }
     }
@@ -225,16 +236,45 @@ public class Inventory : MonoBehaviour
 
     public ItemData_Equipment GetEquipment(EquipmentType _type)
     {
-        ItemData_Equipment equipedItem = null;
-
-        foreach (KeyValuePair<ItemData_Equipment, InventoryItem> item in equipmentDictionary)
+        foreach (var item in equipmentDictionary)
         {
             if (item.Key.equipmentType == _type)
-                equipedItem = item.Key;
+                return item.Key;
+        }
+        return null;
+    }
+
+    public bool CanCraft(ItemData_Equipment _itemToCraft, List<InventoryItem> _requiredMaterials)
+    {
+        List<InventoryItem> materialsToRemove = new List<InventoryItem>();
+
+        for (int i = 0; i < _requiredMaterials.Count; i++)
+        {
+            if (stashDictianory.TryGetValue(_requiredMaterials[i].data, out InventoryItem stashValue))
+            {
+                if (stashValue.stackSize < _requiredMaterials[i].stackSize)
+                {
+                    Debug.Log("not enough materials");
+                    return false;
+                }
+                materialsToRemove.Add(stashValue);
+            }
+            else
+            {
+                Debug.Log("not enough materials");
+                return false;
+            }
         }
 
-        return equipedItem;
+        for (int i = 0; i < materialsToRemove.Count; i++)
+        {
+            RemoveItem(materialsToRemove[i].data);
+        }
 
+        AddItem(_itemToCraft);
+        Debug.Log("Here is your item " + _itemToCraft.name);
+
+        return true;
     }
 
     public void UseFlask()
@@ -272,5 +312,5 @@ public class Inventory : MonoBehaviour
         Debug.Log("Armor cooldown");
         return false;
     }
-
 }
+

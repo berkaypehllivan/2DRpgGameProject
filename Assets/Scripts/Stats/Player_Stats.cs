@@ -42,4 +42,26 @@ public class Player_Stats : Character_Stats
         if (currentArmor != null)
             currentArmor.Effect(player.transform);
     }
+
+    public void CloneDoDamage(Character_Stats _targetStats, float _multiplier)
+    {
+
+        if (TargetCanAvoidAttack(_targetStats))
+            return;
+
+        int totalDamage = damage.GetValue() + strength.GetValue();
+
+        if (_multiplier > 0)
+            totalDamage = Mathf.RoundToInt(totalDamage * _multiplier);
+
+        if (CanCrit())
+        {
+            totalDamage = CalculateCritDamage(totalDamage);
+        }
+
+        totalDamage = CheckTargetArmor(_targetStats, totalDamage);
+        _targetStats.TakeDamage(totalDamage);
+
+        DoMagicalDamage(_targetStats);
+    }
 }

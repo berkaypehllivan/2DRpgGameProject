@@ -14,22 +14,25 @@ public class ItemsDrop : MonoBehaviour
     {
         for (int i = 0; i < possibleDrop.Length; i++)
         {
-            if (Random.Range(0, 100) <= possibleDrop[i].dropChange)
+            if (Random.Range(0, 100) <= possibleDrop[i].dropChance)
                 dropList.Add(possibleDrop[i]);
         }
 
-        if (dropList.Count == 0)
-            return;
+        // Ensure possibleItemDrop does not exceed dropList.Count
+        int actualItemDrop = Mathf.Min(possibleItemDrop, dropList.Count);
 
-        int itemCount = Mathf.Min(possibleItemDrop, dropList.Count);
-        for (int i = 0; i < itemCount; i++)
+        for (int i = 0; i < actualItemDrop; i++)
         {
-            ItemData randomItem = dropList[Random.Range(0, dropList.Count)];
+            if (dropList.Count == 0)
+                break;
 
+            // Ensure the range is correct
+            ItemData randomItem = dropList[Random.Range(0, dropList.Count)];
             dropList.Remove(randomItem);
             DropItem(randomItem);
         }
     }
+
 
 
 
@@ -38,6 +41,7 @@ public class ItemsDrop : MonoBehaviour
         GameObject newDrop = Instantiate(dropPrefab, transform.position, Quaternion.identity);
 
         Vector2 randomVelocity = new Vector2(Random.Range(-5, 5), Random.Range(15, 20));
+
 
         newDrop.GetComponent<ItemObject>().SetupItem(_itemData, randomVelocity);
     }

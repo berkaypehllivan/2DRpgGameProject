@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemType: 1
   itemName: Fire Flask
-  icon: {fileID: 1073501139, guid: a9ca9a41598dd2e44b125928045c518f, type: 3}
-  dropChange: 0
+  itemIcon: {fileID: -410334530, guid: a9ca9a41598dd2e44b125928045c518f, type: 3}
+  itemId: 
+  dropChance: 0
   equipmentType: 3
-  itemCooldown: 0
+  itemCooldown: 15
   itemEffects:
   - {fileID: 11400000, guid: 350f5a95d2b5ba5438662372952d93fb, type: 2}
   strength: 0
@@ -31,6 +32,7 @@ MonoBehaviour:
   armor: 0
   evasion: 0
   magicResistance: 0
-  fireDamage: 0
+  fireDamage: 15
   iceDamage: 0
   lightingDamage: 0
+  craftingMaterials: []

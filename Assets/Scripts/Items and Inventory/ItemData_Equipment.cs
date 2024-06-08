@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 public enum EquipmentType
@@ -14,8 +16,8 @@ public class ItemData_Equipment : ItemData
     public EquipmentType equipmentType;
 
 
+    [Header("Unique Effects")]
     public float itemCooldown;
-
     public ItemEffect[] itemEffects;
 
     [Header("Major Stats")]
@@ -39,6 +41,11 @@ public class ItemData_Equipment : ItemData
     public int fireDamage;
     public int iceDamage;
     public int lightingDamage;
+
+    [Header("Craft requirements")]
+    public List<InventoryItem> craftingMaterials;
+
+    private int descriptionLength;
 
     public void Effect(Transform _enemyPosition)
     {
@@ -92,5 +99,67 @@ public class ItemData_Equipment : ItemData
         playerStats.fireDamage.RemoveModifier(fireDamage);
         playerStats.iceDamage.RemoveModifier(iceDamage);
         playerStats.lightingDamage.RemoveModifier(lightingDamage);
+    }
+
+    public override string GetDescription()
+    {
+        sb.Length = 0;
+        descriptionLength = 0;
+
+        AddItemDescription(strength, "Strength");
+        AddItemDescription(agility, "Agility");
+        AddItemDescription(intelligence, "Intelligence");
+        AddItemDescription(vitality, "Vitality");
+
+        AddItemDescription(damage, "Damage");
+        AddItemDescription(critChange, "CritChange");
+        AddItemDescription(critPower, "CritPower");
+
+        AddItemDescription(health, "Health");
+        AddItemDescription(armor, "Armor");
+        AddItemDescription(evasion, "Evasion");
+        AddItemDescription(magicResistance, "MagicResistance");
+
+        AddItemDescription(fireDamage, "FireDamage");
+        AddItemDescription(iceDamage, "IceDamage");
+        AddItemDescription(lightingDamage, "LightingDamage");
+
+        for (int i = 0; i < itemEffects.Length; i++)
+        {
+            if (itemEffects[i].effectDescription.Length > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine("Unique: " + itemEffects[i].effectDescription);
+                descriptionLength++;
+            }
+
+        }
+
+        if (descriptionLength < 5)
+        {
+            for (int i = 0; i < 5 - descriptionLength; i++)
+            {
+                sb.AppendLine();
+                sb.Append("");
+            }
+        }
+
+
+
+        return sb.ToString();
+    }
+
+    private void AddItemDescription(int _value, string _name)
+    {
+        if (_value != 0)
+        {
+            if (sb.Length > 0)
+                sb.AppendLine();
+
+            if (_value > 0)
+                sb.Append(" + " + _value + " " + _name);
+
+            descriptionLength++;
+        }
     }
 }

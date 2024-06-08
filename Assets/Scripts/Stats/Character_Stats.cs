@@ -2,18 +2,36 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+public enum StatType
+{
+    strength,
+    agility,
+    intelegence,
+    vitality,
+    damage,
+    critChange,
+    critPower,
+    health,
+    armor,
+    evasion,
+    magicRes,
+    fireDamage,
+    iceDamage,
+    lightingDamage
+}
+
 public class Character_Stats : MonoBehaviour
 {
 
     #region Components
 
     private EntityFX fx;
-    private UI_HealthBar healthBarUI;
-
+    public UI_HealthBar healthBarUI;
     public int currentHealth;
 
     [HideInInspector] public System.Action onHealthChanged;
     [HideInInspector] public bool isDead { get; private set; }
+    private bool isVulnerable;
 
     #endregion
 
@@ -71,6 +89,7 @@ public class Character_Stats : MonoBehaviour
         fx = GetComponent<EntityFX>();
 
         healthBarUI = GetComponentInChildren<UI_HealthBar>();
+
     }
 
     protected virtual void Update()
@@ -92,6 +111,15 @@ public class Character_Stats : MonoBehaviour
 
         if (isIgnited)
             ApplyIgniteDamage();
+    }
+
+    public void MakeVulnerableFor(float _duration) => StartCoroutine(VulnerableCoroutine(_duration));
+
+    private IEnumerator VulnerableCoroutine(float _duration)
+    {
+        isVulnerable = true;
+        yield return new WaitForSeconds(_duration);
+        isVulnerable = false;
     }
 
     public virtual void IncreaseStatBy(int _modifier, float _duration, Stat _statToModify)
@@ -125,12 +153,12 @@ public class Character_Stats : MonoBehaviour
 
         DoMagicalDamage(_targetStats); // remove if you don't want to apply magical hit on primary attack
     }
+
     public virtual void TakeDamage(int _damage)
     {
         if (!isDead)
         {
             DecreaseHealthBy(_damage);
-            healthBarUI.canvasGroup.alpha = 1;
             GetComponent<Entity>().DamageImpact();
             fx.StartCoroutine("FlashFX");
         }
@@ -152,6 +180,9 @@ public class Character_Stats : MonoBehaviour
 
     protected virtual void DecreaseHealthBy(int _damage)
     {
+        if (isVulnerable)
+            _damage = Mathf.RoundToInt(_damage * 2.2f);
+
         currentHealth -= _damage;
 
         if (onHealthChanged != null)
@@ -310,7 +341,7 @@ public class Character_Stats : MonoBehaviour
     #endregion
 
     #region Stat Calculations
-    private bool CanCrit()
+    protected bool CanCrit()
     {
         int totalCriticalChange = critChange.GetValue() + agility.GetValue();
 
@@ -325,7 +356,7 @@ public class Character_Stats : MonoBehaviour
         totalMagicalDamage = Mathf.Clamp(totalMagicalDamage, 0, int.MaxValue);
         return totalMagicalDamage;
     }
-    private int CalculateCritDamage(int _damage)
+    protected int CalculateCritDamage(int _damage)
     {
         float totalCritPower = (critPower.GetValue() + strength.GetValue()) * .01f;
 
@@ -334,7 +365,7 @@ public class Character_Stats : MonoBehaviour
         return Mathf.RoundToInt(critDamage);
     }
     public int GetMaxHealthValue() => maxHealth.GetValue() + vitality.GetValue() * 5;
-    private int CheckTargetArmor(Character_Stats _targetStats, int totalDamage)
+    protected int CheckTargetArmor(Character_Stats _targetStats, int totalDamage)
     {
         if (_targetStats.isChilled)
             totalDamage -= Mathf.RoundToInt(_targetStats.armor.GetValue() * .8f);
@@ -342,7 +373,13 @@ public class Character_Stats : MonoBehaviour
         totalDamage = Mathf.Clamp(totalDamage, 0, int.MaxValue);
         return totalDamage;
     }
-    private bool TargetCanAvoidAttack(Character_Stats _targetStats)
+
+    public virtual void OnAvasion()
+    {
+
+    }
+
+    protected bool TargetCanAvoidAttack(Character_Stats _targetStats)
     {
         int totalEvasion = _targetStats.evasion.GetValue() + _targetStats.agility.GetValue();
 
@@ -351,7 +388,7 @@ public class Character_Stats : MonoBehaviour
 
         if (Random.Range(0, 100) < totalEvasion)
         {
-            Debug.Log("Saldýrý Savuþturuldu");
+            _targetStats.OnAvasion();
             return true;
         }
         return false;
@@ -362,7 +399,25 @@ public class Character_Stats : MonoBehaviour
     protected virtual void Die()
     {
         isDead = true;
+    }
 
-        healthBarUI.canvasGroup.alpha = 0;
+    public Stat GetStat(StatType _statType)
+    {
+        if (_statType == StatType.strength) return strength;
+        else if (_statType == StatType.agility) return agility;
+        else if (_statType == StatType.intelegence) return intelligence;
+        else if (_statType == StatType.vitality) return vitality;
+        else if (_statType == StatType.damage) return damage;
+        else if (_statType == StatType.critChange) return critChange;
+        else if (_statType == StatType.critPower) return critPower;
+        else if (_statType == StatType.health) return maxHealth;
+        else if (_statType == StatType.armor) return armor;
+        else if (_statType == StatType.evasion) return evasion;
+        else if (_statType == StatType.magicRes) return magicResistance;
+        else if (_statType == StatType.fireDamage) return fireDamage;
+        else if (_statType == StatType.iceDamage) return iceDamage;
+        else if (_statType == StatType.lightingDamage) return lightingDamage;
+
+        return null;
     }
 }
