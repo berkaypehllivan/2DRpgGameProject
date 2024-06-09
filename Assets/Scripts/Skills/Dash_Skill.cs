@@ -31,6 +31,13 @@ public class Dash_Skill : Skill
 
     }
 
+    protected override void CheckUnlock()
+    {
+        UnlockDash();
+        UnlockCloneOnDash();
+        UnlockInvincibleDash();
+    }
+
     public override void UseSkill()
     {
         base.UseSkill();

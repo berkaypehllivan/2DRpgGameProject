@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-public class Inventory : MonoBehaviour
+public class Inventory : MonoBehaviour, ISaveManager
 {
     public static Inventory instance;
 
     public List<ItemData> startingItems;
+
     public List<InventoryItem> equipment;
     public Dictionary<ItemData_Equipment, InventoryItem> equipmentDictionary;
 
@@ -15,7 +17,10 @@ public class Inventory : MonoBehaviour
     public List<InventoryItem> stash;
     public Dictionary<ItemData, InventoryItem> stashDictianory;
 
+
+
     [Header("Inventory UI")]
+
     [SerializeField] private Transform inventorySlotParent;
     [SerializeField] private Transform stashSlotParent;
     [SerializeField] private Transform equipmentSlotParent;
@@ -33,6 +38,9 @@ public class Inventory : MonoBehaviour
     public float flaskCooldown { get; private set; }
     private float armorCooldown;
 
+    [Header("Data base")]
+    public List<InventoryItem> loadedItems;
+    public List<ItemData_Equipment> loadedEquipment;
     private void Awake()
     {
         if (instance == null)
@@ -52,6 +60,7 @@ public class Inventory : MonoBehaviour
         equipment = new List<InventoryItem>();
         equipmentDictionary = new Dictionary<ItemData_Equipment, InventoryItem>();
 
+
         inventoryItemSlot = inventorySlotParent.GetComponentsInChildren<UI_ItemSlot>();
         stashItemSlot = stashSlotParent.GetComponentsInChildren<UI_ItemSlot>();
         equipmentSlot = equipmentSlotParent.GetComponentsInChildren<UI_EquipmentSlot>();
@@ -62,6 +71,25 @@ public class Inventory : MonoBehaviour
 
     private void AddStartingItems()
     {
+        foreach (ItemData_Equipment item in loadedEquipment)
+        {
+            EquipItem(item);
+        }
+
+        if (loadedItems.Count > 0)
+        {
+            foreach (InventoryItem item in loadedItems)
+            {
+                for (int i = 0; i < item.stackSize; i++)
+                {
+                    AddItem(item.data);
+                }
+            }
+
+            return;
+        }
+
+
         for (int i = 0; i < startingItems.Count; i++)
         {
             if (startingItems[i] != null)
@@ -88,6 +116,7 @@ public class Inventory : MonoBehaviour
             AddItem(oldEquipment);
         }
 
+
         equipment.Add(newItem);
         equipmentDictionary.Add(newEquipment, newItem);
         newEquipment.AddModifiers();
@@ -104,8 +133,6 @@ public class Inventory : MonoBehaviour
             equipment.Remove(value);
             equipmentDictionary.Remove(itemToRemove);
             itemToRemove.RemoveModifiers();
-
-            UpdateSlotUI();
         }
     }
 
@@ -129,6 +156,7 @@ public class Inventory : MonoBehaviour
         {
             stashItemSlot[i].CleanUpSlot();
         }
+
 
         for (int i = 0; i < inventory.Count; i++)
         {
@@ -157,6 +185,8 @@ public class Inventory : MonoBehaviour
             AddToInventory(_item);
         else if (_item.itemType == ItemType.Material)
             AddToStash(_item);
+
+
 
         UpdateSlotUI();
     }
@@ -202,6 +232,7 @@ public class Inventory : MonoBehaviour
                 value.RemoveStack();
         }
 
+
         if (stashDictianory.TryGetValue(_item, out InventoryItem stashValue))
         {
             if (stashValue.stackSize <= 1)
@@ -218,30 +249,12 @@ public class Inventory : MonoBehaviour
 
     public bool CanAddItem()
     {
-        return inventory.Count < inventoryItemSlot.Length;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (inventory.Count >= inventoryItemSlot.Length)
         {
-            ItemData newItem = inventory[inventory.Count - 1].data;
-            RemoveItem(newItem);
+            return false;
         }
-    }
 
-    public List<InventoryItem> GetEquipmentList() => equipment;
-
-    public List<InventoryItem> GetStashList() => stash;
-
-    public ItemData_Equipment GetEquipment(EquipmentType _type)
-    {
-        foreach (var item in equipmentDictionary)
-        {
-            if (item.Key.equipmentType == _type)
-                return item.Key;
-        }
-        return null;
+        return true;
     }
 
     public bool CanCraft(ItemData_Equipment _itemToCraft, List<InventoryItem> _requiredMaterials)
@@ -254,17 +267,22 @@ public class Inventory : MonoBehaviour
             {
                 if (stashValue.stackSize < _requiredMaterials[i].stackSize)
                 {
-                    Debug.Log("not enough materials");
+                    Debug.Log("Not enough materials");
                     return false;
                 }
-                materialsToRemove.Add(stashValue);
+                else
+                {
+                    materialsToRemove.Add(stashValue);
+                }
+
             }
             else
             {
-                Debug.Log("not enough materials");
+                Debug.Log("Materials not found");
                 return false;
             }
         }
+
 
         for (int i = 0; i < materialsToRemove.Count; i++)
         {
@@ -275,6 +293,23 @@ public class Inventory : MonoBehaviour
         Debug.Log("Here is your item " + _itemToCraft.name);
 
         return true;
+    }
+
+    public List<InventoryItem> GetEquipmentList() => equipment;
+
+    public List<InventoryItem> GetStashList() => stash;
+
+    public ItemData_Equipment GetEquipment(EquipmentType _type)
+    {
+        ItemData_Equipment equipedItem = null;
+
+        foreach (KeyValuePair<ItemData_Equipment, InventoryItem> item in equipmentDictionary)
+        {
+            if (item.Key.equipmentType == _type)
+                equipedItem = item.Key;
+        }
+
+        return equipedItem;
     }
 
     public void UseFlask()
@@ -293,9 +328,7 @@ public class Inventory : MonoBehaviour
             lastTimeUsedFlask = Time.time;
         }
         else
-        {
-            Debug.Log("flask on cooldown");
-        }
+            Debug.Log("Flask on cooldown;");
     }
 
     public bool CanUseArmor()
@@ -309,8 +342,70 @@ public class Inventory : MonoBehaviour
             return true;
         }
 
-        Debug.Log("Armor cooldown");
+        Debug.Log("Armor on cooldown");
         return false;
     }
-}
 
+    public void LoadData(GameData _data)
+    {
+        foreach (KeyValuePair<string, int> pair in _data.inventory)
+        {
+            foreach (var item in GetItemDataBase())
+            {
+                if (item != null && item.itemId == pair.Key)
+                {
+                    InventoryItem itemToLoad = new InventoryItem(item);
+                    itemToLoad.stackSize = pair.Value;
+
+                    loadedItems.Add(itemToLoad);
+                }
+            }
+        }
+
+        foreach (string loadedItemId in _data.equipmentId)
+        {
+            foreach (var item in GetItemDataBase())
+            {
+                if (item != null && loadedItemId == item.itemId)
+                {
+                    loadedEquipment.Add(item as ItemData_Equipment);
+                }
+            }
+        }
+    }
+
+    public void SaveData(ref GameData _data)
+    {
+        _data.inventory.Clear();
+
+        foreach (KeyValuePair<ItemData, InventoryItem> pair in inventoryDictianory)
+        {
+            _data.inventory.Add(pair.Key.itemId, pair.Value.stackSize);
+        }
+
+        foreach (KeyValuePair<ItemData, InventoryItem> pair in stashDictianory)
+        {
+            _data.inventory.Add(pair.Key.itemId, pair.Value.stackSize);
+        }
+
+        foreach (KeyValuePair<ItemData_Equipment, InventoryItem> pair in equipmentDictionary)
+        {
+            _data.equipmentId.Add(pair.Key.itemId);
+        }
+    }
+
+    private List<ItemData> GetItemDataBase()
+    {
+        List<ItemData> itemDataBase = new List<ItemData>();
+        string[] assetNames = AssetDatabase.FindAssets("", new[] { "Assets/Data/Items" });
+
+        foreach (string SOName in assetNames)
+        {
+            var SOpath = AssetDatabase.GUIDToAssetPath(SOName);
+            var itemData = AssetDatabase.LoadAssetAtPath<ItemData>(SOpath);
+            itemDataBase.Add(itemData);
+        }
+
+        return itemDataBase;
+    }
+}

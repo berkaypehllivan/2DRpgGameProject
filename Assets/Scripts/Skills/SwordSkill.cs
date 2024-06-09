@@ -77,6 +77,16 @@ public class SwordSkill : Skill
         vulnurableUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockVulnerable);
     }
 
+    protected override void CheckUnlock()
+    {
+        UnlockTimeStop();
+        UnlockVulnerable();
+        UnlockSword();
+        UnlockBounceSword();
+        UnlockPierceSword();
+        UnlockPierceSword();
+    }
+
     public override void UseSkill()
     {
         base.UseSkill();

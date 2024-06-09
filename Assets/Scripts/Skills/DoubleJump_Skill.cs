@@ -16,6 +16,11 @@ public class DoubleJump_Skill : Skill
         doubleJumpUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockDoubleJump);
     }
 
+    protected override void CheckUnlock()
+    {
+        UnlockDoubleJump();
+    }
+
     public override void UseSkill()
     {
         base.UseSkill();

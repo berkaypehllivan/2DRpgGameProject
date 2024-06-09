@@ -30,6 +30,11 @@ public class Blackhole_Skill : Skill
         currentBlackhole.SetupBlackHole(maxSize, growSpeed, shrinkSpeed, amountOfAttacks, cloneCooldown, blackholeDuration);
     }
 
+    protected override void CheckUnlock()
+    {
+        UnlockBlackHole();
+    }
+
     private void UnlockBlackHole()
     {
         if (blackHoleUnlockButton.unlocked)

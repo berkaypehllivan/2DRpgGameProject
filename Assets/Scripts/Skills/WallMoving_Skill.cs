@@ -21,6 +21,11 @@ public class WallMoving_Skill : Skill
         wallJumpUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockWallJump);
     }
 
+    protected override void CheckUnlock()
+    {
+        UnlockWallSlide();
+        UnlockWallJump();
+    }
     private void UnlockWallSlide()
     {
         if (wallSlideUnlockButton.unlocked)
