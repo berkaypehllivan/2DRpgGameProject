@@ -15,7 +15,7 @@ MonoBehaviour:
   itemType: 1
   itemName: Golden Ring
   itemIcon: {fileID: -878758905, guid: a9ca9a41598dd2e44b125928045c518f, type: 3}
-  itemId: 
+  itemId: a17b5e598c32c5b428a87f4fa8aefe33
   dropChance: 0
   equipmentType: 2
   itemCooldown: 0
@@ -32,7 +32,7 @@ MonoBehaviour:
   evasion: 10
   magicResistance: 0
   fireDamage: 0
-  iceDamage: 0
+  iceDamage: 5
   lightingDamage: 0
   craftingMaterials:
   - data: {fileID: 11400000, guid: 61a2ae21bec3bca43b919f1b3d3aad79, type: 2}

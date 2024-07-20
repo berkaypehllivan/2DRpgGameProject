@@ -15,5 +15,5 @@ MonoBehaviour:
   itemType: 0
   itemName: Animal skin
   itemIcon: {fileID: -973012730, guid: a9ca9a41598dd2e44b125928045c518f, type: 3}
-  itemId: 
-  dropChance: 65.8
+  itemId: 61a2ae21bec3bca43b919f1b3d3aad79
+  dropChance: 85.3

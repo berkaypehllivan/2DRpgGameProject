@@ -17,6 +17,8 @@ public class PlayerDeathState : PlayerState
     {
         base.Enter();
 
+        AudioManager.instance.PlaySFX(26, null);
+
         GameObject.Find("Canvas").GetComponent<UI>().SwitchOnEndScreen();
 
         player.gameObject.layer = LayerMask.NameToLayer("Enemy");

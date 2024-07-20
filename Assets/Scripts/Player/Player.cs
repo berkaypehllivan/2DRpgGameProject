@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class Player : Entity
 {
@@ -40,6 +38,7 @@ public class Player : Entity
     public float dashDir { get; private set; }
     public SkillManager skill { get; private set; }
     public GameObject sword { get; private set; }
+    public PlayerFX fx { get; private set; }
 
     #endregion
 
@@ -90,6 +89,7 @@ public class Player : Entity
     protected override void Start()
     {
         base.Start();
+        fx = GetComponent<PlayerFX>();
 
         stateMachine.Initialize(idleState);
 
@@ -109,6 +109,9 @@ public class Player : Entity
 
         stateMachine.currentState.Update();
 
+        if (Time.timeScale == 0)
+            return;
+
         CheckForDashInput();
 
         if (Input.GetKeyDown(KeyCode.F) && skill.crystal.crystalUnlocked)
@@ -119,6 +122,12 @@ public class Player : Entity
 
         if (Input.GetKeyDown(KeyCode.LeftAlt))
             Inventory.instance.UseFlask();
+
+    }
+
+    protected override void SetupZeroKnockbackPower()
+    {
+        knockbackPower = new Vector2(0, 0);
     }
 
     public override void SlowEntityBy(float _slowPercentage, float _slowDuration)
@@ -130,6 +139,7 @@ public class Player : Entity
 
         Invoke("ReturnDefaultSpeed", _slowDuration);
     }
+
     protected override void ReturnDefaultSpeed()
     {
         base.ReturnDefaultSpeed();
@@ -173,9 +183,6 @@ public class Player : Entity
                 dashDir = facingDir;
 
             stateMachine.ChangeState(dashState);
-
-            if (SkillManager.instance.dash.CanUseSkill())
-                return;
         }
     }
 
@@ -184,13 +191,10 @@ public class Player : Entity
 
         if (collision.gameObject.CompareTag("Enemy") && !stats.isDead)
         {
-            Vector2 originalKnockback = knockbackDirection;
-
-            knockbackDirection = new Vector2(knockbackDirection.x * 2.5f, knockbackDirection.y);
-
+            SetupKnockbackPower(new Vector2(8, 10));
             stats.TakeDamage(touchDamage);
-
-            knockbackDirection = originalKnockback;
+            fx.CreateHitFX(PlayerManager.instance.player.transform, false);
+            fx.ScreenShake(fx.shakeHighImpact);
         }
     }
 

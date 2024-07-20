@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(Enemy_Stats))]
+[RequireComponent(typeof(EntityFX))]
+[RequireComponent(typeof(ItemsDrop))]
 public class Enemy : Entity
 {
-    public EnemySkeleton enemy;
+    [HideInInspector] public EnemySkeleton skeleton;
+    [HideInInspector] public Enemy_Slime slime;
+
     [Header("Stunned Info")]
     public float stunDuration;
     public Vector2 stunDirection;
@@ -19,12 +26,15 @@ public class Enemy : Entity
     private float defaultMoveSpeed;
 
     [Header("Attack Info")]
+    public float agroDistance = 2;
     public float attackDistance;
     public float attackCooldown;
+    public float minAttackCooldown;
+    public float maxAttackCooldown;
     [SerializeField] protected LayerMask whatIsPlayer;
     [HideInInspector] public float lasTimeAttacked;
 
-
+    public EntityFX fx { get; private set; }
     public EnemyStateMachine stateMachine { get; private set; }
     public string lastAnimBoolName { get; private set; }
 
@@ -36,7 +46,15 @@ public class Enemy : Entity
 
         defaultMoveSpeed = moveSpeed;
 
-        enemy = GetComponent<EnemySkeleton>();
+        skeleton = GetComponent<EnemySkeleton>();
+        slime = GetComponent<Enemy_Slime>();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        fx = GetComponent<EntityFX>();
     }
 
     protected override void Update()

@@ -40,6 +40,7 @@ public class Parry_Skill : Skill
     {
         base.UseSkill();
 
+        cooldownTimer = cooldown;
 
         if (restoreUnlocked)
         {

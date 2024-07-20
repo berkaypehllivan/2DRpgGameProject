@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,7 +39,8 @@ public class Inventory : MonoBehaviour, ISaveManager
     public float flaskCooldown { get; private set; }
     private float armorCooldown;
 
-    [Header("Data base")]
+    [Header("Database")]
+    public List<ItemData> itemDatabase;
     public List<InventoryItem> loadedItems;
     public List<ItemData_Equipment> loadedEquipment;
     private void Awake()
@@ -116,7 +118,7 @@ public class Inventory : MonoBehaviour, ISaveManager
             AddItem(oldEquipment);
         }
 
-
+        AudioManager.instance.PlaySFX(23, null);
         equipment.Add(newItem);
         equipmentDictionary.Add(newEquipment, newItem);
         newEquipment.AddModifiers();
@@ -133,6 +135,7 @@ public class Inventory : MonoBehaviour, ISaveManager
             equipment.Remove(value);
             equipmentDictionary.Remove(itemToRemove);
             itemToRemove.RemoveModifiers();
+            AudioManager.instance.PlaySFX(24, null);
         }
     }
 
@@ -230,6 +233,7 @@ public class Inventory : MonoBehaviour, ISaveManager
             }
             else
                 value.RemoveStack();
+
         }
 
 
@@ -350,7 +354,7 @@ public class Inventory : MonoBehaviour, ISaveManager
     {
         foreach (KeyValuePair<string, int> pair in _data.inventory)
         {
-            foreach (var item in GetItemDataBase())
+            foreach (var item in itemDatabase)
             {
                 if (item != null && item.itemId == pair.Key)
                 {
@@ -364,7 +368,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
         foreach (string loadedItemId in _data.equipmentId)
         {
-            foreach (var item in GetItemDataBase())
+            foreach (var item in itemDatabase)
             {
                 if (item != null && loadedItemId == item.itemId)
                 {
@@ -394,6 +398,10 @@ public class Inventory : MonoBehaviour, ISaveManager
         }
     }
 
+#if UNITY_EDITOR
+    [ContextMenu("Fill up item database")]
+    private void FillUpItemDatabase() => itemDatabase = new List<ItemData>(GetItemDataBase());
+
     private List<ItemData> GetItemDataBase()
     {
         List<ItemData> itemDataBase = new List<ItemData>();
@@ -408,4 +416,6 @@ public class Inventory : MonoBehaviour, ISaveManager
 
         return itemDataBase;
     }
+
+#endif
 }

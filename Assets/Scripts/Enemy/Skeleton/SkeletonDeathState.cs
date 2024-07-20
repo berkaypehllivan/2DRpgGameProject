@@ -15,6 +15,9 @@ public class SkeletonDeathState : EnemyState
         base.Enter();
 
         stateTimer = 4f;
+
+        AudioManager.instance.PlaySFX(20, null);
+
     }
 
     public override void Update()

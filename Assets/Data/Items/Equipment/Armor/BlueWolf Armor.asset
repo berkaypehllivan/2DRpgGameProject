@@ -15,7 +15,7 @@ MonoBehaviour:
   itemType: 1
   itemName: BlueWolf Armor
   itemIcon: {fileID: 288293509, guid: a9ca9a41598dd2e44b125928045c518f, type: 3}
-  itemId: 
+  itemId: 70d97b8fb5167914697765d80c39e0f6
   dropChance: 0
   equipmentType: 1
   itemCooldown: 5
@@ -29,10 +29,14 @@ MonoBehaviour:
   critChange: 0
   critPower: 0
   health: 50
-  armor: 10
+  armor: 5
   evasion: 0
-  magicResistance: 10
+  magicResistance: 0
   fireDamage: 0
   iceDamage: 0
   lightingDamage: 0
-  craftingMaterials: []
+  craftingMaterials:
+  - data: {fileID: 11400000, guid: 61a2ae21bec3bca43b919f1b3d3aad79, type: 2}
+    stackSize: 5
+  - data: {fileID: 11400000, guid: 7e7c7508ac2377c41857184e3f5e72c7, type: 2}
+    stackSize: 2

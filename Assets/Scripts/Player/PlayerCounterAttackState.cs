@@ -32,12 +32,17 @@ public class PlayerCounterAttackState : PlayerState
 
         foreach (var hit in colliders)
         {
+
+            if (hit.GetComponent<Arrow_Controller>() != null)
+            {
+                SuccessfullCounterAttack();
+                hit.GetComponent<Arrow_Controller>().FlipArrow();
+            }
             if (hit.GetComponent<Enemy>() != null)
             {
                 if (hit.GetComponent<Enemy>().CanBeStunned())
                 {
-                    stateTimer = 10;
-                    player.anim.SetBool("SuccessfulCounterAttack", true);
+                    SuccessfullCounterAttack();
 
                     player.skill.parry.UseSkill();
 
@@ -52,5 +57,13 @@ public class PlayerCounterAttackState : PlayerState
 
         if (stateTimer < 0 || triggerCalled)
             stateMachine.ChangeState(player.idleState);
+    }
+
+    private void SuccessfullCounterAttack()
+    {
+        stateTimer = 10;
+        player.anim.SetBool("SuccessfulCounterAttack", true);
+
+        AudioManager.instance.PlaySFX(27, null);
     }
 }

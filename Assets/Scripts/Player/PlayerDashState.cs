@@ -12,9 +12,12 @@ public class PlayerDashState : PlayerState
     {
         base.Enter();
 
+        AudioManager.instance.PlaySFX(4, null);
+
         player.skill.dash.CloneOnDash();
         player.skill.dash.InvincibleDash();
         stateTimer = player.dashDuration;
+
     }
 
     public override void Exit()
@@ -37,5 +40,8 @@ public class PlayerDashState : PlayerState
 
         if (stateTimer < 0)
             stateMachine.ChangeState(player.moveState);
+
+        if (player.skill.dash.invincibleOnDashUnlocked)
+            player.fx.CreateAfterImage();
     }
 }

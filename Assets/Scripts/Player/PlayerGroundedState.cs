@@ -30,6 +30,12 @@ public class PlayerGroundedState : PlayerState
 
         if (Input.GetKeyDown(KeyCode.R) && player.skill.blackHole.blackHoleUnlocked)
         {
+            if (player.skill.blackHole.cooldownTimer > 0)
+            {
+                player.fx.CreatePopUpText("Cooldown");
+                return;
+            }
+
             stateMachine.ChangeState(player.blackHole);
         }
 
@@ -37,7 +43,15 @@ public class PlayerGroundedState : PlayerState
             stateMachine.ChangeState(player.aimSword);
 
         if (Input.GetKeyDown(KeyCode.Q) && player.skill.parry.parryUnlocked)
+        {
+            if (player.skill.parry.cooldownTimer > 0)
+            {
+                player.fx.CreatePopUpText("Cooldown");
+                return;
+            }
+
             stateMachine.ChangeState(player.counterAttack);
+        }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
             stateMachine.ChangeState(player.primaryAttack);

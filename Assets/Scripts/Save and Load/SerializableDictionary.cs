@@ -18,19 +18,28 @@ public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IS
             values.Add(pair.Value);
         }
     }
+
     public void OnAfterDeserialize()
     {
         this.Clear();
 
         if (keys.Count != values.Count)
         {
-            Debug.Log("Keys count is not equal to values count");
+            Debug.LogError("Keys count is not equal to values count");
+            return;
         }
 
         for (int i = 0; i < keys.Count; i++)
         {
-            this.Add(keys[i], values[i]);
+            if (this.ContainsKey(keys[i]))
+            {
+                Debug.LogWarning($"Duplicate key found: {keys[i]}. Updating value.");
+                this[keys[i]] = values[i]; // Mevcut deðeri güncelle
+            }
+            else
+            {
+                this.Add(keys[i], values[i]); // Yeni anahtar-deðer çifti ekle
+            }
         }
     }
-
 }

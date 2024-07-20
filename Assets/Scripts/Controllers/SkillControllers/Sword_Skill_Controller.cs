@@ -61,6 +61,7 @@ public class Sword_Skill_Controller : MonoBehaviour
 
         spinDirection = Mathf.Clamp(rb.velocity.x, -1, 1);
 
+        AudioManager.instance.PlaySFX(18, null);
         Invoke("DestroyMe", 7);
     }
 
@@ -87,6 +88,7 @@ public class Sword_Skill_Controller : MonoBehaviour
     }
     public void ReturnSword()
     {
+        AudioManager.instance.PlaySFX(17, null);
         anim.SetBool("Rotation", true);
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         transform.parent = null;
@@ -265,6 +267,7 @@ public class Sword_Skill_Controller : MonoBehaviour
 
         rb.isKinematic = true;
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        GetComponentInChildren<ParticleSystem>().Play();
 
         if (isBouncing && enemyTarget.Count > 0)
             return;

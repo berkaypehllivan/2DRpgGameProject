@@ -12,7 +12,7 @@ public class PlayerDoubleJumpState : PlayerState
     {
         base.Enter();
 
-
+        AudioManager.instance.PlaySFX(34, null);
         rb.velocity = new Vector2(rb.velocity.x, player.jumpForce * 1f);
         player.DoubleJump = false;
         player.coyoteTimeCounter = 0f;
@@ -27,6 +27,8 @@ public class PlayerDoubleJumpState : PlayerState
     public override void Update()
     {
         base.Update();
+
+        player.fx.CreateAfterImage();
 
         if (!player.DoubleJump)
             stateMachine.ChangeState(player.airState);

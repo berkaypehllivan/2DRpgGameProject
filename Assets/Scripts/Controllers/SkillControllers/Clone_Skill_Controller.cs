@@ -40,10 +40,10 @@ public class Clone_Skill_Controller : MonoBehaviour
     public void SetupClone(Transform _newTransform, float _cloneDuration, bool _canAttack, Vector3 _offset, Transform _closestEnemy, bool _canDuplicate, float _changeToDuplicate, Player _player, float _attackMultiplier)
     {
         if (_canAttack)
-            anim.SetInteger("AttackNumber", Random.Range(1, 4));
+            anim.SetInteger("AttackNumber", Random.Range(1, 3));
 
         player = _player;
-        transform.position = _newTransform.position + _offset / 2;
+        transform.position = _newTransform.position + _offset;
         cloneTimer = _cloneDuration;
         canDuplicateClone = _canDuplicate;
         closestEnemy = _closestEnemy;
@@ -58,6 +58,8 @@ public class Clone_Skill_Controller : MonoBehaviour
     }
     private void AttackTriggers()
     {
+        AudioManager.instance.PlaySFX(2, null);
+
         Collider2D[] colliders = Physics2D.OverlapCircleAll(attackCheck.position, attackCheckRadius);
 
         foreach (var hit in colliders)
@@ -65,6 +67,8 @@ public class Clone_Skill_Controller : MonoBehaviour
             if (hit.GetComponent<Enemy>() != null)
             {
                 //player.stats.DoDamage(hit.GetComponent<Character_Stats>());
+
+                hit.GetComponent<Entity>().SetupKnockbackDir(transform);
 
                 Player_Stats playerStats = player.GetComponent<Player_Stats>();
                 Enemy_Stats enemyStats = hit.GetComponent<Enemy_Stats>();

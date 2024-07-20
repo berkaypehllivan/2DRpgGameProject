@@ -15,7 +15,7 @@ MonoBehaviour:
   itemType: 1
   itemName: Nice Armor
   itemIcon: {fileID: -1581127718, guid: a9ca9a41598dd2e44b125928045c518f, type: 3}
-  itemId: 
+  itemId: 478052a5922baa044aae0bf084646fd7
   dropChance: 0
   equipmentType: 1
   itemCooldown: 0
@@ -27,11 +27,15 @@ MonoBehaviour:
   damage: 0
   critChange: 0
   critPower: 0
-  health: 15
-  armor: 10
-  evasion: 0
+  health: 0
+  armor: 15
+  evasion: 15
   magicResistance: 0
   fireDamage: 0
   iceDamage: 0
   lightingDamage: 0
-  craftingMaterials: []
+  craftingMaterials:
+  - data: {fileID: 11400000, guid: 61a2ae21bec3bca43b919f1b3d3aad79, type: 2}
+    stackSize: 2
+  - data: {fileID: 11400000, guid: 7e7c7508ac2377c41857184e3f5e72c7, type: 2}
+    stackSize: 2

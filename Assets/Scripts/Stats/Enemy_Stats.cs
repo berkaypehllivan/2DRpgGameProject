@@ -18,7 +18,7 @@ public class Enemy_Stats : Character_Stats
 
     protected override void Start()
     {
-        soulsDropAmount.SetDefaultValue(100);
+        soulsDropAmount.SetDefaultValue(500);
 
         ApplyLevelModifiers();
 
@@ -60,6 +60,10 @@ public class Enemy_Stats : Character_Stats
     public override void TakeDamage(int _damage)
     {
         base.TakeDamage(_damage);
+
+        if (currentHealth > 10)
+            AudioManager.instance.PlaySFX(3, null);
+
         healthBarUI.canvasGroup.alpha = 1;
     }
 
@@ -70,6 +74,7 @@ public class Enemy_Stats : Character_Stats
         enemy.Die();
 
         PlayerManager.instance.currency += soulsDropAmount.GetValue();
+
         myDropSystem.GenerateDrop();
     }
 }

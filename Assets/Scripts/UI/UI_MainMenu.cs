@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class UI_MainMenu : MonoBehaviour
 {
-    [SerializeField] private string sceneName = "MainScene";
+    [SerializeField] private string sceneName;
     [SerializeField] private GameObject continueButton;
     [SerializeField] private UI_FadeScreen fadeScreen;
 
@@ -16,24 +16,25 @@ public class UI_MainMenu : MonoBehaviour
 
     public void ContinueGame()
     {
-        StartCoroutine(LoadSceneWithFadeEffect(1.5f));
+        StartCoroutine(LoadSceneWithFadeEffect(1.5f, "MainScene"));
     }
 
     public void NewGame()
     {
         SaveManager.instance.DeleteSavedData();
-        StartCoroutine(LoadSceneWithFadeEffect(1.5f));
+        StartCoroutine(LoadSceneWithFadeEffect(1.5f, "MainScene"));
     }
 
     public void ExitGame()
     {
-        Debug.Log("Exit Game");
+        SaveManager.instance.SaveGame();
+        Application.Quit();
     }
 
-    IEnumerator LoadSceneWithFadeEffect(float _delay)
+    public IEnumerator LoadSceneWithFadeEffect(float _delay, string _sceneName)
     {
         fadeScreen.FadeOut();
         yield return new WaitForSeconds(_delay);
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene(_sceneName);
     }
 }

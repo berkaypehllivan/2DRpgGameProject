@@ -15,20 +15,19 @@ MonoBehaviour:
   itemType: 1
   itemName: Dragula's Sword
   itemIcon: {fileID: -1944902997, guid: a9ca9a41598dd2e44b125928045c518f, type: 3}
-  itemId: 
+  itemId: 052e15ab59cdbaa448a7015787ea854e
   dropChance: 0
   equipmentType: 0
   itemCooldown: 0
   itemEffects:
   - {fileID: 11400000, guid: 14964be10a1eb434488a14351c8afe69, type: 2}
-  itemEffectDescription: 
   strength: 5
   agility: 0
   intelligence: 0
   vitality: 0
   damage: 5
-  critChange: 15
-  critPower: 0
+  critChange: 50
+  critPower: 400
   health: 0
   armor: 0
   evasion: 0
@@ -38,8 +37,4 @@ MonoBehaviour:
   lightingDamage: 0
   craftingMaterials:
   - data: {fileID: 11400000, guid: 7e7c7508ac2377c41857184e3f5e72c7, type: 2}
-    stackSize: 1
-  - data: {fileID: 11400000, guid: 7e7c7508ac2377c41857184e3f5e72c7, type: 2}
-    stackSize: 2
-  - data: {fileID: 11400000, guid: 61a2ae21bec3bca43b919f1b3d3aad79, type: 2}
-    stackSize: 3
+    stackSize: 7

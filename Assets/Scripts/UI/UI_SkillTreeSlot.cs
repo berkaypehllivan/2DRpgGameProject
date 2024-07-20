@@ -13,7 +13,6 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] private string skillDescription;
     [SerializeField] private Color lockedSkillColor;
 
-
     public bool unlocked;
 
     [SerializeField] private UI_SkillTreeSlot[] shouldBeUnlocked;
@@ -43,12 +42,16 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public void UnlockSkillSlot()
     {
         if (PlayerManager.instance.HaveEnoughMoney(skillCost) == false)
+        {
+            AudioManager.instance.PlaySFX(22, null);
             return;
+        }
 
         for (int i = 0; i < shouldBeUnlocked.Length; i++)
         {
             if (shouldBeUnlocked[i].unlocked == false)
             {
+                AudioManager.instance.PlaySFX(22, null);
                 Debug.Log("Cannot unlock skill");
                 return;
             }
@@ -59,11 +62,13 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             if (shouldBeLocked[i].unlocked == true)
             {
+                AudioManager.instance.PlaySFX(22, null);
                 Debug.Log("Cannot unlock skill");
                 return;
             }
         }
 
+        AudioManager.instance.PlaySFX(25, null);
         unlocked = true;
         skillImage.color = Color.white;
     }

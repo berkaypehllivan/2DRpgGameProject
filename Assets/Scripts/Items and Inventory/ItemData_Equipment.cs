@@ -126,11 +126,14 @@ public class ItemData_Equipment : ItemData
 
         for (int i = 0; i < itemEffects.Length; i++)
         {
-            if (itemEffects[i].effectDescription.Length > 0)
+            if (itemEffects[i] != null)
             {
-                sb.AppendLine();
-                sb.AppendLine("Unique: " + itemEffects[i].effectDescription);
-                descriptionLength++;
+                if (itemEffects[i].effectDescription.Length > 0)
+                {
+                    sb.AppendLine();
+                    sb.AppendLine("Unique: " + itemEffects[i].effectDescription);
+                    descriptionLength++;
+                }
             }
 
         }

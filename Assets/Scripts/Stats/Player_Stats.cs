@@ -17,11 +17,17 @@ public class Player_Stats : Character_Stats
     public override void TakeDamage(int _damage)
     {
         base.TakeDamage(_damage);
+
+        AudioManager.instance.PlaySFX(1, null);
+
+        player.fx.ScreenShake(player.fx.shakeDamageImpact);
     }
 
     public override void DoDamage(Character_Stats _targetStats)
     {
         base.DoDamage(_targetStats);
+
+        player.fx.ScreenShake(player.fx.shakeDamageImpact);
     }
 
     protected override void Die()
@@ -38,6 +44,12 @@ public class Player_Stats : Character_Stats
     protected override void DecreaseHealthBy(int _damage)
     {
         base.DecreaseHealthBy(_damage);
+
+        if (_damage > GetMaxHealthValue() * .3f)
+        {
+            player.SetupKnockbackPower(new Vector2(10, 6));
+            player.fx.ScreenShake(player.fx.shakeHighImpact);
+        }
 
         ItemData_Equipment currentArmor = Inventory.instance.GetEquipment(EquipmentType.Armor);
 
