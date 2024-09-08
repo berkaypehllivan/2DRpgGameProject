@@ -16,14 +16,19 @@ public class Skill : MonoBehaviour
         CheckUnlock();
     }
 
-    protected virtual void Update()
+    public void CallCheckUnlock()
     {
-        cooldownTimer -= Time.deltaTime;
+        CheckUnlock();
     }
 
     protected virtual void CheckUnlock()
     {
 
+    }
+
+    protected virtual void Update()
+    {
+        cooldownTimer -= Time.deltaTime;
     }
 
     public virtual bool CanUseSkill()

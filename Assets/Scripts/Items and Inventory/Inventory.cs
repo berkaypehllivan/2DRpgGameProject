@@ -3,6 +3,7 @@ using System.ComponentModel;
 using UnityEditor;
 using UnityEngine;
 
+
 public class Inventory : MonoBehaviour, ISaveManager
 {
     public static Inventory instance;
@@ -39,8 +40,8 @@ public class Inventory : MonoBehaviour, ISaveManager
     public float flaskCooldown { get; private set; }
     private float armorCooldown;
 
-    [Header("Database")]
-    public List<ItemData> itemDatabase;
+    [Header("Data base")]
+    public List<ItemData> itemDataBase;
     public List<InventoryItem> loadedItems;
     public List<ItemData_Equipment> loadedEquipment;
     private void Awake()
@@ -132,10 +133,10 @@ public class Inventory : MonoBehaviour, ISaveManager
     {
         if (equipmentDictionary.TryGetValue(itemToRemove, out InventoryItem value))
         {
+            AudioManager.instance.PlaySFX(24, null);
             equipment.Remove(value);
             equipmentDictionary.Remove(itemToRemove);
             itemToRemove.RemoveModifiers();
-            AudioManager.instance.PlaySFX(24, null);
         }
     }
 
@@ -233,7 +234,6 @@ public class Inventory : MonoBehaviour, ISaveManager
             }
             else
                 value.RemoveStack();
-
         }
 
 
@@ -354,7 +354,7 @@ public class Inventory : MonoBehaviour, ISaveManager
     {
         foreach (KeyValuePair<string, int> pair in _data.inventory)
         {
-            foreach (var item in itemDatabase)
+            foreach (var item in itemDataBase)
             {
                 if (item != null && item.itemId == pair.Key)
                 {
@@ -368,7 +368,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
         foreach (string loadedItemId in _data.equipmentId)
         {
-            foreach (var item in itemDatabase)
+            foreach (var item in itemDataBase)
             {
                 if (item != null && loadedItemId == item.itemId)
                 {
@@ -376,11 +376,13 @@ public class Inventory : MonoBehaviour, ISaveManager
                 }
             }
         }
+
     }
 
     public void SaveData(ref GameData _data)
     {
         _data.inventory.Clear();
+        _data.equipmentId.Clear();
 
         foreach (KeyValuePair<ItemData, InventoryItem> pair in inventoryDictianory)
         {
@@ -398,9 +400,11 @@ public class Inventory : MonoBehaviour, ISaveManager
         }
     }
 
+
+
 #if UNITY_EDITOR
-    [ContextMenu("Fill up item database")]
-    private void FillUpItemDatabase() => itemDatabase = new List<ItemData>(GetItemDataBase());
+    [ContextMenu("Fill up item data base")]
+    private void FillUpItemDataBase() => itemDataBase = new List<ItemData>(GetItemDataBase());
 
     private List<ItemData> GetItemDataBase()
     {
@@ -416,6 +420,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
         return itemDataBase;
     }
-
 #endif
+
+
 }

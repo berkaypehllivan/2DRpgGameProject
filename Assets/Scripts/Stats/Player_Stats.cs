@@ -6,6 +6,7 @@ public class Player_Stats : Character_Stats
 {
 
     private Player player;
+    [SerializeField] private float cooldown;
 
     protected override void Start()
     {
@@ -14,13 +15,31 @@ public class Player_Stats : Character_Stats
         player = GetComponent<Player>();
     }
 
+    protected override void Update()
+    {
+        base.Update();
+
+        cooldown -= Time.deltaTime;
+    }
+
     public override void TakeDamage(int _damage)
     {
+        if (!isDead)
+        {
+            if (cooldown > 0)
+            {
+                return;
+            }
+        }
+
         base.TakeDamage(_damage);
+
+        cooldown = 1;
 
         AudioManager.instance.PlaySFX(1, null);
 
         player.fx.ScreenShake(player.fx.shakeDamageImpact);
+
     }
 
     public override void DoDamage(Character_Stats _targetStats)
@@ -33,6 +52,7 @@ public class Player_Stats : Character_Stats
     protected override void Die()
     {
         base.Die();
+
         player.Die();
 
         GameManager.instance.lostCurrencyAmount = PlayerManager.instance.currency;

@@ -19,6 +19,7 @@ public class Crystal_Skill : Skill
 
     [Header("Explosive crystal")]
     [SerializeField] private UI_SkillTreeSlot unlockExplosiveButton;
+    [SerializeField] private float explisoveCooldown;
     [SerializeField] private bool canExplode;
 
 
@@ -51,6 +52,17 @@ public class Crystal_Skill : Skill
 
     // here we unlock crystal skills
     #region Unlock skill region
+
+    protected override void CheckUnlock()
+    {
+        UnlockCrystal();
+        UnlockCrystalMirage();
+        UnlockExplosiveCrystal();
+        UnlockMovingCrystal();
+        UnlockMultiStack();
+
+
+    }
     private void UnlockCrystal()
     {
         if (unlockCrystalButton.unlocked)
@@ -66,7 +78,10 @@ public class Crystal_Skill : Skill
     private void UnlockExplosiveCrystal()
     {
         if (unlockExplosiveButton.unlocked)
+        {
             canExplode = true;
+            cooldown = explisoveCooldown;
+        }
     }
 
     private void UnlockMovingCrystal()
@@ -85,7 +100,6 @@ public class Crystal_Skill : Skill
 
     public override void UseSkill()
     {
-
         base.UseSkill();
 
         if (CanUseMultiCrystal())

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EnemySkeleton : Enemy
 {
-
     #region States
 
 
@@ -65,7 +64,4 @@ public class EnemySkeleton : Enemy
     }
 
     #endregion
-
-
-
 }

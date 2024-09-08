@@ -22,6 +22,9 @@ public class PlayerWallSlideState : PlayerState
     {
         base.Update();
 
+        if (player.col.isTrigger)
+            return;
+
         if (Input.GetKeyDown(KeyCode.Space) && player.canWallJump)
         {
             stateMachine.ChangeState(player.wallJump);

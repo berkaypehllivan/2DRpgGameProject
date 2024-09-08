@@ -42,8 +42,6 @@ public class Clone_Skill : Skill
     protected override void Update()
     {
         base.Update();
-
-
     }
 
     #region Unlock Region

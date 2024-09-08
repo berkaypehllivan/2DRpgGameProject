@@ -76,7 +76,7 @@ public class Dash_Skill : Skill
     {
         if (invincibleOnDashUnlocked)
         {
-            player.col.enabled = false;
+            player.col.isTrigger = true;
         }
     }
 }

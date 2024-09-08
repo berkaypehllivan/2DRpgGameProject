@@ -41,6 +41,13 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void UnlockSkillSlot()
     {
+        if (unlocked)
+        {
+            Debug.Log("Skill slot already unlocked");
+            AudioManager.instance.PlaySFX(22, null);
+            return;
+        }
+
         if (PlayerManager.instance.HaveEnoughMoney(skillCost) == false)
         {
             AudioManager.instance.PlaySFX(22, null);

@@ -25,7 +25,7 @@ public class PlayerDashState : PlayerState
         base.Exit();
 
         player.skill.dash.CloneOnArrival();
-        player.col.enabled = true;
+        player.col.isTrigger = false;
         player.SetVelocity(0, rb.velocity.y);
     }
 
@@ -33,7 +33,7 @@ public class PlayerDashState : PlayerState
     {
         base.Update();
 
-        if (!player.IsGroundDetected() && player.IsWallDetected() && player.canWallJump)
+        if (!player.IsGroundDetected() && player.IsWallDetected() && player.canWallJump && !player.col.isTrigger)
             stateMachine.ChangeState(player.wallSlide);
 
         player.SetVelocity(player.dashSpeed * player.dashDir, 0);

@@ -76,6 +76,11 @@ public class GameManager : MonoBehaviour, ISaveManager
         LoadCheckpoints(_data);
         LoadClosestCheckpoint(_data);
         LoadLostCurrency(_data);
+
+        foreach (var skill in FindObjectsOfType<Skill>())
+        {
+            skill.CallCheckUnlock();
+        }
     }
 
     public void SaveData(ref GameData _data)
