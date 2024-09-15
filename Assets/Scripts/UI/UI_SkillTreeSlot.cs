@@ -97,7 +97,7 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
         }
     }
 
-    public void SaveData(ref GameData _data)
+    public void SaveData(GameData _data)
     {
         if (_data.skillTree.TryGetValue(skillName, out bool value))
         {

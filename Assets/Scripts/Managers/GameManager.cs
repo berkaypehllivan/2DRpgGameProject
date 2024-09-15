@@ -33,6 +33,14 @@ public class GameManager : MonoBehaviour, ISaveManager
         player = PlayerManager.instance.player.transform;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            RestartScene();
+        }
+    }
+
     public void RestartScene()
     {
         SaveManager.instance.SaveGame();
@@ -83,7 +91,7 @@ public class GameManager : MonoBehaviour, ISaveManager
         }
     }
 
-    public void SaveData(ref GameData _data)
+    public void SaveData(GameData _data)
     {
         _data.lostCurrencyAmount = lostCurrencyAmount;
         _data.lostCurrencyX = player.position.x;

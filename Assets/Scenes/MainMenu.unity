@@ -458,6 +458,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SaveManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5142248872280543804, guid: 0df16b033ed844c4cb3f4cd5f064eefe, type: 3}
+      propertyPath: encryptData
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1325,7 +1329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1f526f0fbc3de44391aae96d48002ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: MainScene
+  sceneName: Level 1
   continueButton: {fileID: 334038668}
   fadeScreen: {fileID: 274887223}
 --- !u!114 &1888020657

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Scene = UnityEngine.SceneManagement.Scene;
 
 public class SaveManager : MonoBehaviour
 {
@@ -22,19 +24,39 @@ public class SaveManager : MonoBehaviour
 
     private void Awake()
     {
+
         if (instance != null)
+        {
+            Debug.Log("Sahnede birden fazla SaveManager objesi tespit edildi. Yeni olan yok edildi.");
             Destroy(instance.gameObject);
+            return;
+        }
         else
             instance = this;
+
+        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
     }
 
-
-    private void Start()
+    private void OnEnable()
     {
-        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
         saveManagers = FindAllSaveManagers();
 
         LoadGame();
+    }
+
+    private void Start()
+    {
+
     }
 
     public void NewGame()
@@ -63,7 +85,7 @@ public class SaveManager : MonoBehaviour
 
         foreach (ISaveManager saveManager in saveManagers)
         {
-            saveManager.SaveData(ref gameData);
+            saveManager.SaveData(gameData);
         }
 
         dataHandler.Save(gameData);
@@ -80,6 +102,7 @@ public class SaveManager : MonoBehaviour
 
         return new List<ISaveManager>(saveManagers);
     }
+
 
     public bool HasSavedData()
     {

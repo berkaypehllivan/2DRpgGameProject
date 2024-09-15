@@ -379,7 +379,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     }
 
-    public void SaveData(ref GameData _data)
+    public void SaveData(GameData _data)
     {
         _data.inventory.Clear();
         _data.equipmentId.Clear();

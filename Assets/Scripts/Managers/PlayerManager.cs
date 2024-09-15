@@ -32,7 +32,7 @@ public class PlayerManager : MonoBehaviour, ISaveManager
         this.currency = _data.currency;
     }
 
-    public void SaveData(ref GameData _data)
+    public void SaveData(GameData _data)
     {
         _data.currency = this.currency;
     }

@@ -16,13 +16,14 @@ public class UI_MainMenu : MonoBehaviour
 
     public void ContinueGame()
     {
-        StartCoroutine(LoadSceneWithFadeEffect(1.5f, "MainScene"));
+        SaveManager.instance.SaveGame();
+        StartCoroutine(LoadSceneWithFadeEffect(1.5f, sceneName));
     }
 
     public void NewGame()
     {
         SaveManager.instance.DeleteSavedData();
-        StartCoroutine(LoadSceneWithFadeEffect(1.5f, "MainScene"));
+        StartCoroutine(LoadSceneWithFadeEffect(1.5f, sceneName));
     }
 
     public void ExitGame()

@@ -28,6 +28,7 @@ public class GameData
         this.currency = 0;
 
         equipmentId = new List<string>();
+
         closestCheckpointId = string.Empty;
 
         skillTree = new SerializableDictionary<string, bool>();
