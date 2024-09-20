@@ -14,6 +14,9 @@ public class GameData
     public SerializableDictionary<string, bool> checkpoints;
     public string closestCheckpointId;
 
+    public float keyPositionX;
+    public float keyPositionY;
+
     public float lostCurrencyX;
     public float lostCurrencyY;
     public int lostCurrencyAmount;

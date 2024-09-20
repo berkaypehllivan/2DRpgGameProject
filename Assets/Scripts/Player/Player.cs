@@ -16,6 +16,10 @@ public class Player : Entity
     private float defaultMoveSpeed;
     public float swordReturnImpact;
 
+    [Header("Key System")]
+    public Transform keyFollowPoint;
+    public Key followingKey;
+
     [Header("Jump Info")]
     public bool canDoubleJump;
     public bool canWallSlide;

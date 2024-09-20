@@ -49,8 +49,6 @@ public class EntityFX : MonoBehaviour
         newText.GetComponent<TextMeshPro>().text = _text;
     }
 
-
-
     public void MakeTransparent(bool _transparent)
     {
         if (_transparent)

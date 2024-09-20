@@ -204,7 +204,7 @@ MonoBehaviour:
     baseValue: 0
     modifiers: 
   level: 1
-  percantageModifier: 0.4
+  percantageModifier: 0
 --- !u!114 &6155683844903876664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,9 +246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0170e03e2a8dac4980c7c3c31d2d851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  possibleItemDrop: 2
-  possibleDrop:
-  - {fileID: 11400000, guid: 7e7c7508ac2377c41857184e3f5e72c7, type: 2}
+  possibleItemDrop: 0
+  possibleDrop: []
   dropPrefab: {fileID: 3980021128508558232, guid: a8aa1c16a603a1c499e7896883d61309, type: 3}
 --- !u!114 &6765374705426585871
 MonoBehaviour:

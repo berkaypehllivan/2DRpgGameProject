@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UI : MonoBehaviour, ISaveManager
 {
@@ -28,7 +29,7 @@ public class UI : MonoBehaviour, ISaveManager
 
     private void Awake()
     {
-        SwitchTo(skillTreeUI); // we need this to assing events on skill tree slots before we assign events on skill scripts
+        SwitchTo(skillTreeUI);
         fadeScreen.gameObject.SetActive(true);
     }
 
@@ -137,6 +138,13 @@ public class UI : MonoBehaviour, ISaveManager
         {
             _data.volumeSettings.Add(item.parametr, item.slider.value);
         }
+    }
+
+    public IEnumerator LoadSceneWithFadeEffect(float _delay, string _sceneName)
+    {
+        fadeScreen.FadeOut();
+        yield return new WaitForSeconds(_delay);
+        SceneManager.LoadScene(_sceneName);
     }
 
     public void RestartGameButton() => GameManager.instance.RestartScene();

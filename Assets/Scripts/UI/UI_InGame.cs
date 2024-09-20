@@ -16,7 +16,6 @@ public class UI_InGame : MonoBehaviour
     [SerializeField] private Image blackHoleImage;
     [SerializeField] private Image flaskImage;
 
-
     private SkillManager skills;
 
     [Header("Souls Info")]
@@ -38,17 +37,30 @@ public class UI_InGame : MonoBehaviour
     {
         UpdateSoulsUI();
 
+        if (!skills.dash.dashUnlocked)
+            LockedSkillSlot(dashImage);
+
+        if (!skills.parry.parryUnlocked)
+            LockedSkillSlot(parryImage);
+
+        if (!skills.crystal.crystalUnlocked)
+            LockedSkillSlot(crystalImage);
+        else
+            OpenSkillSlot(crystalImage);
+
+        if (!skills.sword.swordUnlocked)
+            LockedSkillSlot(swordImage);
+        else
+            OpenSkillSlot(swordImage);
+
+        if (!skills.blackHole.blackHoleUnlocked)
+            LockedSkillSlot(blackHoleImage);
+
         if (Input.GetKeyDown(KeyCode.LeftShift) && skills.dash.dashUnlocked)
             SetCooldownOf(dashImage);
 
         if (Input.GetKeyDown(KeyCode.Q) && skills.parry.parryUnlocked)
             SetCooldownOf(parryImage);
-
-        if (Input.GetKeyDown(KeyCode.F) && skills.crystal.crystalUnlocked)
-            SetCooldownOf(crystalImage);
-
-        if (Input.GetKeyDown(KeyCode.Mouse1) && skills.sword.swordUnlocked)
-            SetCooldownOf(swordImage);
 
         if (Input.GetKeyDown(KeyCode.R) && skills.blackHole.blackHoleUnlocked)
             SetCooldownOf(blackHoleImage);
@@ -58,8 +70,6 @@ public class UI_InGame : MonoBehaviour
 
         CheckCooldownOf(dashImage, skills.dash.cooldown);
         CheckCooldownOf(parryImage, skills.parry.cooldown);
-        CheckCooldownOf(crystalImage, skills.crystal.cooldown);
-        CheckCooldownOf(swordImage, skills.sword.cooldown);
         CheckCooldownOf(blackHoleImage, skills.blackHole.cooldown);
         CheckCooldownOf(flaskImage, Inventory.instance.flaskCooldown);
     }
@@ -80,6 +90,10 @@ public class UI_InGame : MonoBehaviour
         slider.value = playerStats.currentHealth;
 
     }
+
+    private void LockedSkillSlot(Image _image) => _image.fillAmount = 1;
+
+    private void OpenSkillSlot(Image _image) => _image.fillAmount = 0;
 
     private void SetCooldownOf(Image _image)
     {

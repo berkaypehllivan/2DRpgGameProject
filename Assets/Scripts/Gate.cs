@@ -6,13 +6,23 @@ using UnityEngine.SceneManagement;
 public class Gate : MonoBehaviour
 {
     [SerializeField] private string scene;
+    [SerializeField] private UI ui;
+    [SerializeField] private LionGate lionGate;
+    private bool canLeaveLevel;
+
+    private void Update()
+    {
+        if (canLeaveLevel)
+            if (Input.GetKeyDown(KeyCode.E))
+                StartCoroutine(ui.LoadSceneWithFadeEffect(1.5f, scene));
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.tag == "Player")
         {
-            SaveManager.instance.SaveGame();
-            SceneManager.LoadScene(scene);
+            if (lionGate != null && lionGate.doorOpen)
+                canLeaveLevel = true;
         }
     }
 }
