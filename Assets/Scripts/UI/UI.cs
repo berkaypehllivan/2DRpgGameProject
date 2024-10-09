@@ -42,22 +42,21 @@ public class UI : MonoBehaviour, ISaveManager
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.U))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
             SwitchWithKeyTo(characterUI);
 
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
             SwitchWithKeyTo(skillTreeUI);
 
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
             SwitchWithKeyTo(craftUI);
 
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.Escape))
             SwitchWithKeyTo(optionsUI);
     }
 
     public void SwitchTo(GameObject _menu)
     {
-
         for (int i = 0; i < transform.childCount; i++)
         {
             bool fadeScreen = transform.GetChild(i).GetComponent<UI_FadeScreen>() != null;
@@ -149,10 +148,17 @@ public class UI : MonoBehaviour, ISaveManager
 
     public void RestartGameButton() => GameManager.instance.RestartScene();
 
-    public void SaveAndExitButton()
+    public void SaveAndExitButton() => StartCoroutine(WaitOnExitGame(2, "MainMenu"));
+
+    private IEnumerator WaitOnExitGame(float _delay, string _scene)
     {
         SaveManager.instance.SaveGame();
-        Application.Quit();
+        Time.timeScale = 1;
+        yield return new WaitForSeconds(0.1f);
+        SwitchTo(InGameUI);
+        fadeScreen.FadeOut();
+        yield return new WaitForSeconds(_delay);
+        SceneManager.LoadScene(_scene);
     }
 
 }

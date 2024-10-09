@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45eec9634c65835428b6f4b9d3132b6f, type: 3}
+  m_Name: "Alev \u0130ksiri"
+  m_EditorClassIdentifier: 
+  itemType: 1
+  itemName: "Alev \u0130ksiri"
+  itemIcon: {fileID: 21300000, guid: 1f0102402f382014b8008eb47b1f31f2, type: 3}
+  itemId: 0db9a3824fd49b14083e2cee4c4520a7
+  dropChance: 0
+  equipmentType: 3
+  itemCooldown: 15
+  itemEffects:
+  - {fileID: 11400000, guid: 350f5a95d2b5ba5438662372952d93fb, type: 2}
+  strength: 0
+  agility: 0
+  intelligence: 0
+  vitality: 0
+  damage: 0
+  critChange: 0
+  critPower: 0
+  health: 0
+  armor: 0
+  evasion: 0
+  magicResistance: 0
+  fireDamage: 10
+  iceDamage: 0
+  lightingDamage: 0
+  craftingMaterials:
+  - data: {fileID: 11400000, guid: 627d896bdb8c47842866d1a69cb4addf, type: 2}
+    stackSize: 2
+  - data: {fileID: 11400000, guid: b8cd13f404abb484eac46ca200233768, type: 2}
+    stackSize: 5

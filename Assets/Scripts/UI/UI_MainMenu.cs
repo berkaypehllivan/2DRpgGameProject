@@ -28,7 +28,14 @@ public class UI_MainMenu : MonoBehaviour
 
     public void ExitGame()
     {
+        StartCoroutine(ExitGameWithDelay(2));
+    }
+
+    private IEnumerator ExitGameWithDelay(float _delay)
+    {
         SaveManager.instance.SaveGame();
+        fadeScreen.FadeOut();
+        yield return new WaitForSeconds(_delay);
         Application.Quit();
     }
 

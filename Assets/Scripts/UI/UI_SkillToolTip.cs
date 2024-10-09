@@ -14,7 +14,7 @@ public class UI_SkillToolTip : UI_ToolTip
     {
         skillDescription.text = _skillDescription;
         skillName.text = _skillName;
-        skillCost.text = "Cost: " + _price;
+        skillCost.text = "Fiyat: " + _price;
         gameObject.SetActive(true);
 
         AdjustPosition();

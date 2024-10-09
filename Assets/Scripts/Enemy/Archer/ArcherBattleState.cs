@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ArcherBattleState : EnemyState
 {
     private Transform player;
     private Enemy_Archer enemy;
     private int moveDir;
+
     public ArcherBattleState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animBoolName, Enemy_Archer _enemy) : base(_enemyBase, _stateMachine, _animBoolName)
     {
         this.enemy = _enemy;
@@ -56,18 +57,18 @@ public class ArcherBattleState : EnemyState
             if (stateTimer < 0 || Vector2.Distance(player.transform.position, enemy.transform.position) > 15)
                 stateMachine.ChangeState(enemy.idleState);
         }
-        //UpdateMoveDirection();
 
-        enemy.SetVelocity(enemy.moveSpeed * moveDir, rb.velocity.y);
+
+        BattleStateFlipControl();
     }
 
-    //private void UpdateMoveDirection()
-    //{
-    //    if (player.position.x > enemy.transform.position.x)
-    //        moveDir = 1;
-    //    else if (player.position.x < enemy.transform.position.x)
-    //        moveDir = -1;
-    //}
+    private void BattleStateFlipControl()
+    {
+        if (player.position.x > enemy.transform.position.x && enemy.facingDir == -1)
+            enemy.Flip();
+        else if (player.position.x < enemy.transform.position.x && enemy.facingDir == 1)
+            enemy.Flip();
+    }
 
     private bool canAttack()
     {
@@ -82,11 +83,15 @@ public class ArcherBattleState : EnemyState
 
     private bool CanJump()
     {
+        if (enemy.GroundBehind() == false || enemy.WallBehind() == true)
+            return false;
+
         if (Time.time >= enemy.lastTimeJumped + enemy.jumpCooldown)
         {
             enemy.lastTimeJumped = Time.time;
             return true;
         }
+
         return false;
     }
 }

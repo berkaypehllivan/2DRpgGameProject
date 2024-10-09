@@ -8,13 +8,13 @@ public class Entity : MonoBehaviour
     #region Collision Info
 
     [SerializeField] protected Transform groundCheck;
-    [SerializeField] protected float groundCheckDistance;
+    [SerializeField] protected float groundCheckDistance = 0.5f;
     [SerializeField] protected Transform wallCheck;
-    [SerializeField] protected float wallCheckDistance;
+    [SerializeField] protected float wallCheckDistance = 0.5f;
     [SerializeField] protected LayerMask whatIsGround;
     [Header("Collision Info")]
     public Transform attackCheck;
-    public float attackCheckRadius;
+    public float attackCheckRadius = 1.2f;
 
     #endregion
 
@@ -23,9 +23,9 @@ public class Entity : MonoBehaviour
     protected bool facingRight = true;
 
     [Header("Knockback Info")]
-    [SerializeField] protected float knockbackDuration;
-    [SerializeField] protected Vector2 knockbackOffset;
-    [SerializeField] protected Vector2 knockbackPower;
+    [SerializeField] protected float knockbackDuration = 0.1f;
+    [SerializeField] protected Vector2 knockbackOffset = new Vector2(0.5f, 2);
+    [SerializeField] protected Vector2 knockbackPower = new Vector2(5, 3);
     protected bool isKnocked;
     protected bool isCooldown;
 

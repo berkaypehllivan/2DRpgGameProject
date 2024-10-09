@@ -4935,7 +4935,7 @@ MonoBehaviour:
   damage: 25
   xVelocity: 5
   rb: {fileID: 8037114144202973429}
-  canMove: 0
+  canMove: 1
   flipped: 0
 --- !u!70 &3254039440380700174
 CapsuleCollider2D:

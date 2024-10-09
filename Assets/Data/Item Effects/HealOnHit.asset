@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deff900c4b9bc054ebcab68bee7ce184, type: 3}
   m_Name: HealOnHit
   m_EditorClassIdentifier: 
-  effectDescription: Heal's you for 10& on hit.
+  effectDescription: "Vuru\u015F Ba\u015F\u0131na %10 Sa\u011Fl\u0131\u011F\u0131n
+    Artar."
   healPercent: 0.1

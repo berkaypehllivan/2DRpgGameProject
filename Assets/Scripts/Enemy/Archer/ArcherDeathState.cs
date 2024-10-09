@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 public class ArcherDeathState : EnemyState
@@ -9,6 +8,7 @@ public class ArcherDeathState : EnemyState
     {
         this.enemy = _enemy;
     }
+
     public override void Enter()
     {
         base.Enter();
@@ -30,6 +30,5 @@ public class ArcherDeathState : EnemyState
             if (stateTimer < 0)
                 enemy.DestroyGameObject();
         }
-
     }
 }

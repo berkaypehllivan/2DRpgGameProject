@@ -31,6 +31,5 @@ public class SkeletonDeathState : EnemyState
             if (stateTimer < 0)
                 enemy.DestroyGameObject();
         }
-
     }
 }

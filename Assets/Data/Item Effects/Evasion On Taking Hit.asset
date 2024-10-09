@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e33d6f25b8dfa2348acc93ae33bace6c, type: 3}
   m_Name: Evasion On Taking Hit
   m_EditorClassIdentifier: 
-  effectDescription: Increase evasion on each hit taken.
+  effectDescription: "Al\u0131nan Her Darbede Ka\xE7\u0131nmay\u0131 15 Puan Art\u0131r\u0131r"
   buffType: 9
   buffAmount: 15
-  buffDuration: 1.5
+  buffDuration: 2

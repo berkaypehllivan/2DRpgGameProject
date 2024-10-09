@@ -14,23 +14,23 @@ public class Enemy : Entity
     [HideInInspector] public Enemy_Slime slime;
 
     [Header("Stunned Info")]
-    public float stunDuration;
-    public Vector2 stunDirection;
+    public float stunDuration = 1;
+    public Vector2 stunDirection = new Vector2(4, 6);
     protected bool canBeStunned;
     [SerializeField] protected GameObject counterImage;
 
     [Header("Move Info")]
-    public float moveSpeed;
-    public float idleTime;
-    public float battleTime;
+    public float moveSpeed = 2;
+    public float idleTime = 1;
+    public float battleTime = 7;
     private float defaultMoveSpeed;
 
     [Header("Attack Info")]
     public float agroDistance = 2;
-    public float attackDistance;
-    public float attackCooldown;
-    public float minAttackCooldown;
-    public float maxAttackCooldown;
+    public float attackDistance = 2;
+    public float attackCooldown = 0.4f;
+    public float minAttackCooldown = 1;
+    public float maxAttackCooldown = 2;
     [SerializeField] protected LayerMask whatIsPlayer;
     [HideInInspector] public float lasTimeAttacked;
 
@@ -138,6 +138,11 @@ public class Enemy : Entity
     }
 
     public virtual void AnimationFinishTrigger() => stateMachine.currentState.AnimationFinishTrigger();
+
+    public virtual void AnimationSpecialAttackTrigger()
+    {
+
+    }
 
     public virtual RaycastHit2D IsPlayerDetected() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, 10, whatIsPlayer);
 

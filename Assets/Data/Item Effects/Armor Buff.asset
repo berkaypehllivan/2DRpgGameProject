@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e33d6f25b8dfa2348acc93ae33bace6c, type: 3}
   m_Name: Armor Buff
   m_EditorClassIdentifier: 
-  effectDescription: Gives 50 armor for 7 seconds.
+  effectDescription: "10 Saniye Boyunca 20 Puan Z\u0131rh Verir"
   buffType: 8
-  buffAmount: 50
-  buffDuration: 7
+  buffAmount: 20
+  buffDuration: 10

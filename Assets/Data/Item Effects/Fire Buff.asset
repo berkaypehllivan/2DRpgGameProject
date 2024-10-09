@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e33d6f25b8dfa2348acc93ae33bace6c, type: 3}
   m_Name: Fire Buff
   m_EditorClassIdentifier: 
+  effectDescription: "Ate\u015F Hasar\u0131n\u0131 10 Puan Art\u0131r\u0131r"
   buffType: 11
-  buffAmount: 15
+  buffAmount: 10
   buffDuration: 5

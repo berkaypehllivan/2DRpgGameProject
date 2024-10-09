@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45eec9634c65835428b6f4b9d3132b6f, type: 3}
+  m_Name: "Dikenli Z\u0131rh"
+  m_EditorClassIdentifier: 
+  itemType: 1
+  itemName: "Dikenli Z\u0131rh"
+  itemIcon: {fileID: -1294465547, guid: be55291aae08d434db3da3b59db3ab4a, type: 3}
+  itemId: e4e0684095b2d324e8f4f9971f72b831
+  dropChance: 0
+  equipmentType: 1
+  itemCooldown: 0
+  itemEffects: []
+  strength: 15
+  agility: 0
+  intelligence: 0
+  vitality: 0
+  damage: 0
+  critChange: 0
+  critPower: 0
+  health: 10
+  armor: 5
+  evasion: 5
+  magicResistance: 0
+  fireDamage: 0
+  iceDamage: 0
+  lightingDamage: 0
+  craftingMaterials:
+  - data: {fileID: 11400000, guid: 74fdb9af9444fa445b9d992a99a73a97, type: 2}
+    stackSize: 5
+  - data: {fileID: 11400000, guid: cb498a4b61ea98f4f88b4122c9d74f68, type: 2}
+    stackSize: 2

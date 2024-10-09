@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45eec9634c65835428b6f4b9d3132b6f, type: 3}
+  m_Name: "Y\xFCre\u011Fin K\u0131l\u0131c\u0131"
+  m_EditorClassIdentifier: 
+  itemType: 1
+  itemName: "Y\xFCre\u011Fin K\u0131l\u0131c\u0131"
+  itemIcon: {fileID: 1698575710, guid: 6679c1a234fa60a488dda86c446cd2b1, type: 3}
+  itemId: c1b5876299a075441bdef50b250a39ba
+  dropChance: 0
+  equipmentType: 0
+  itemCooldown: 0
+  itemEffects:
+  - {fileID: 11400000, guid: 97ec85dc3bbc601499dc2bab3cc5104d, type: 2}
+  strength: 15
+  agility: 0
+  intelligence: 5
+  vitality: 0
+  damage: 0
+  critChange: 0
+  critPower: 0
+  health: 20
+  armor: 0
+  evasion: 0
+  magicResistance: 0
+  fireDamage: 10
+  iceDamage: 0
+  lightingDamage: 0
+  craftingMaterials:
+  - data: {fileID: 11400000, guid: 5d24d0efbd0389649a6c3dc59e381754, type: 2}
+    stackSize: 5
+  - data: {fileID: 11400000, guid: 2c2af3c435926b34e95cdec6ca126a29, type: 2}
+    stackSize: 2
+  - data: {fileID: 11400000, guid: b5629aacc7b328349818dc32d0b66944, type: 2}
+    stackSize: 2

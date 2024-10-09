@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45eec9634c65835428b6f4b9d3132b6f, type: 3}
+  m_Name: "Buzul K\u0131l\u0131\xE7"
+  m_EditorClassIdentifier: 
+  itemType: 1
+  itemName: "Buzul K\u0131l\u0131\xE7"
+  itemIcon: {fileID: -1173226017, guid: 6679c1a234fa60a488dda86c446cd2b1, type: 3}
+  itemId: 35f0efe9b44688d48b78b21879163968
+  dropChance: 0
+  equipmentType: 0
+  itemCooldown: 0
+  itemEffects:
+  - {fileID: 11400000, guid: 14964be10a1eb434488a14351c8afe69, type: 2}
+  strength: 20
+  agility: 0
+  intelligence: 0
+  vitality: 0
+  damage: 0
+  critChange: 0
+  critPower: 0
+  health: 50
+  armor: 0
+  evasion: 0
+  magicResistance: 0
+  fireDamage: 0
+  iceDamage: 15
+  lightingDamage: 0
+  craftingMaterials:
+  - data: {fileID: 11400000, guid: 714f33170014e084a9e9ea90aae6cb20, type: 2}
+    stackSize: 4
+  - data: {fileID: 11400000, guid: b5629aacc7b328349818dc32d0b66944, type: 2}
+    stackSize: 2
+  - data: {fileID: 11400000, guid: cb498a4b61ea98f4f88b4122c9d74f68, type: 2}
+    stackSize: 1

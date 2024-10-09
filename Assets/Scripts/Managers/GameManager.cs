@@ -33,14 +33,6 @@ public class GameManager : MonoBehaviour, ISaveManager
         player = PlayerManager.instance.player.transform;
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            RestartScene();
-        }
-    }
-
     public void RestartScene()
     {
         SaveManager.instance.SaveGame();

@@ -52,7 +52,7 @@ public class EnemySkeleton : Enemy
     {
         base.Die();
 
-        skeleton.gameObject.layer = LayerMask.NameToLayer("DeadEnemy");
+        gameObject.layer = LayerMask.NameToLayer("DeadEnemy");
 
         if (base.CanBeStunned())
         {
