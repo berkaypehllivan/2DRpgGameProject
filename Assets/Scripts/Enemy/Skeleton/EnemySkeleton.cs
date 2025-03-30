@@ -6,7 +6,6 @@ public class EnemySkeleton : Enemy
 {
     #region States
 
-
     public SkeletonIdleState idleState { get; private set; }
     public SkeletonMoveState moveState { get; private set; }
     public SkeletonBattleState battleState { get; private set; }

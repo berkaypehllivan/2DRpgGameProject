@@ -9,10 +9,9 @@ public class Player : Entity
     [Header("Attack Details")]
     public Vector2[] attackMovement;
     public float counterAttackDuration = .2f;
-    private int touchDamage = 15;
 
     [Header("Move Info")]
-    public float moveSpeed = 12f;
+    public float moveSpeed = 7f;
     private float defaultMoveSpeed;
     public float swordReturnImpact;
 
@@ -21,12 +20,13 @@ public class Player : Entity
     public Key followingKey;
 
     [Header("Jump Info")]
+    public float jumpForce = 14f;
+    public float coyoteTime = 0.12f;
+
     public bool canDoubleJump;
     public bool canWallSlide;
     public bool canWallJump;
-    public float jumpForce;
     private float defaultJumpForce;
-    public float coyoteTime;
     [HideInInspector] public float coyoteTimeCounter;
     [HideInInspector] public float fallMultiplier;
     public bool DoubleJump;
@@ -118,6 +118,9 @@ public class Player : Entity
 
         CheckForDashInput();
 
+        if (Input.GetKeyDown(KeyCode.M))
+            PlayerManager.instance.currency += 5000;
+
         if (Input.GetKeyDown(KeyCode.F) && skill.crystal.crystalUnlocked)
             skill.crystal.CanUseSkill();
 
@@ -192,15 +195,23 @@ public class Player : Entity
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
         if (collision.gameObject.CompareTag("Enemy") && !stats.isDead)
         {
-            SetupKnockbackPower(new Vector2(8, 10));
-            stats.TakeDamage(touchDamage);
-            fx.CreateHitFX(PlayerManager.instance.player.transform, false);
-            fx.ScreenShake(fx.shakeHighImpact);
+            // Düþmandan gelen karakter istatistiklerini al
+            Character_Stats enemyStats = collision.gameObject.GetComponent<Character_Stats>();
+
+            if (enemyStats != null)
+            {
+                int enemyDamage = enemyStats.damage.GetValue();
+
+                stats.TakeDamage(enemyDamage);
+
+                fx.CreateHitFX(PlayerManager.instance.player.transform, false);
+                fx.ScreenShake(fx.shakeHighImpact);
+            }
         }
     }
+
 
     public override void Die()
     {

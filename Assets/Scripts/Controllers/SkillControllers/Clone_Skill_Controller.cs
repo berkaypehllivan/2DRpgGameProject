@@ -50,15 +50,22 @@ public class Clone_Skill_Controller : MonoBehaviour
         chanceToDuplicate = _changeToDuplicate;
         attackMultiplier = _attackMultiplier;
 
-        FaceClosestTarget();
+        if (player.dashDir != 0)
+        {
+            facingDir = (int)Mathf.Sign(_player.dashDir);
+            sr.flipX = facingDir < 0;
+        }
+        else
+            FaceClosestTarget();
     }
+
     private void AnimationTrigger()
     {
         cloneTimer = -.1f;
     }
     private void AttackTriggers()
     {
-        AudioManager.instance.PlaySFX(2, null);
+        AudioManager.instance.PlaySFX(1, null);
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(attackCheck.position, attackCheckRadius);
 
@@ -92,16 +99,13 @@ public class Clone_Skill_Controller : MonoBehaviour
         }
     }
 
-    private void FaceClosestTarget()
+    public void FaceClosestTarget()
     {
-
-        if (closestEnemy != null)
+        // 3 birim mesafe kontrolü
+        if (closestEnemy != null && Vector3.Distance(transform.position, closestEnemy.position) <= 10f)
         {
-            if (transform.position.x > closestEnemy.position.x)
-            {
-                facingDir = -1;
-                transform.Rotate(0, 180, 0);
-            }
+            // Sadece sprite'ý çevir, rotation kullanma
+            sr.flipX = closestEnemy.position.x < transform.position.x;
         }
     }
 }

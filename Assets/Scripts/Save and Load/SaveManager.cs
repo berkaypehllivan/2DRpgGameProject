@@ -12,7 +12,7 @@ public class SaveManager : MonoBehaviour
     [SerializeField] private bool encryptData;
     private GameData gameData;
     private List<ISaveManager> saveManagers;
-    private FileDataHandler dataHandler;
+    public FileDataHandler dataHandler;
 
 
     [ContextMenu("Delete save file")]

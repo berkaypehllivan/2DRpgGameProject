@@ -24,13 +24,13 @@ public class Entity : MonoBehaviour
 
     [Header("Knockback Info")]
     [SerializeField] protected float knockbackDuration = 0.1f;
-    [SerializeField] protected Vector2 knockbackOffset = new Vector2(0.5f, 2);
-    [SerializeField] protected Vector2 knockbackPower = new Vector2(5, 3);
+    [SerializeField] protected Vector2 knockbackOffset = new Vector2(2, 5);
+    [SerializeField] protected Vector2 knockbackPower = new Vector2(5, 7);
+
     protected bool isKnocked;
     protected bool isCooldown;
 
     public System.Action onFlipped;
-
 
     #region Components
     public Animator anim { get; private set; }
@@ -68,6 +68,7 @@ public class Entity : MonoBehaviour
     }
 
     protected virtual void ReturnDefaultSpeed() => anim.speed = 1;
+
     public virtual void DamageImpact()
     {
         if (!isCooldown)
@@ -87,33 +88,38 @@ public class Entity : MonoBehaviour
     public virtual void SetupKnockbackDir(Transform _damageDirection)
     {
         if (_damageDirection.position.x > transform.position.x)
-            knockbackDir = -1;
-        else if (_damageDirection.position.x < transform.position.x)
-            knockbackDir = 1;
+            knockbackDir = -1;  // Saðdan vurulursa saða gitmeli
+        else
+            knockbackDir = 1; // Soldan vurulursa sola gitmeli
     }
+
 
     public virtual IEnumerator HitKnockback()
     {
         isKnocked = true;
-
         float xOffset = Random.Range(knockbackOffset.x, knockbackOffset.y);
 
-        if (knockbackPower.x > 0 || knockbackPower.y > 0)
-            rb.velocity = new Vector2((knockbackPower.x + xOffset) * knockbackDir, knockbackPower.y);
+        Vector2 knockbackForce = new Vector2(
+            (knockbackPower.x + xOffset) * knockbackDir,
+            knockbackPower.y
+        );
+
+        rb.velocity = knockbackForce;
 
         yield return new WaitForSeconds(knockbackDuration);
+
         isKnocked = false;
-        SetupZeroKnockbackPower();
-        if (PlayerManager.instance.player.IsGroundDetected())
-            setZeroVelocity();
+        rb.velocity = new Vector2(0, rb.velocity.y); // Knockback sonrasý hareketi sýfýrla
     }
+
 
     public void SetupKnockbackPower(Vector2 _knockbackPower) => knockbackPower = _knockbackPower;
 
     protected virtual void SetupZeroKnockbackPower()
     {
-
+        rb.velocity = new Vector2(0, rb.velocity.y);
     }
+
     #region Collision
     public virtual bool IsGroundDetected() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
     public virtual bool IsWallDetected() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
@@ -163,21 +169,23 @@ public class Entity : MonoBehaviour
     #endregion
 
     #region Velocity
+
     public virtual void setZeroVelocity()
     {
-        if (isKnocked)
-            return;
+        if (isKnocked) return; // Knockback sýrasýnda hareketi engelle
 
-        rb.velocity = new Vector2(0, 0);
+        rb.velocity = Vector2.zero;
     }
+
     public virtual void SetVelocity(float _xVelocity, float _yVelocity)
     {
-        if (isKnocked)
-            return;
+        if (isKnocked) return; // Knockback sýrasýnda hareketi engelle
 
         rb.velocity = new Vector2(_xVelocity, _yVelocity);
         FlipController(_xVelocity);
     }
+
+
     #endregion
 
     public virtual void Die()

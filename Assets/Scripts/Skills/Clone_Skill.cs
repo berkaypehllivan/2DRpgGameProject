@@ -18,6 +18,7 @@ public class Clone_Skill : Skill
     [Header("Aggressive Clone")]
     [SerializeField] private UI_SkillTreeSlot aggressiveCloneUnlockButton;
     [SerializeField] private float aggressiveCloneAttackMultiplier;
+
     public bool canApplyOnHitEffect { get; private set; }
 
     [Header("Multiple Clone")]
@@ -25,6 +26,7 @@ public class Clone_Skill : Skill
     [SerializeField] private float multiCloneAttackMultiplier;
     [SerializeField] private bool canDuplicateClone;
     [SerializeField] private float changeToDuplicate;
+
     [Header("Crystal Instead Of Clone")]
     [SerializeField] private UI_SkillTreeSlot crystalInsteadCloneUnlockButton;
     public bool crystalInsteadOfClone;
@@ -91,7 +93,6 @@ public class Clone_Skill : Skill
 
     public void CreateClone(Transform _clonePosition, Vector3 _offset)
     {
-
         if (crystalInsteadOfClone)
         {
             SkillManager.instance.crystal.CreateCrystal();
@@ -99,14 +100,24 @@ public class Clone_Skill : Skill
         }
 
         GameObject newClone = Instantiate(clonePrefab);
+        Clone_Skill_Controller cloneController = newClone.GetComponent<Clone_Skill_Controller>();
 
-        newClone.GetComponent<Clone_Skill_Controller>().SetupClone(_clonePosition, cloneDuration, canAttack,
-            _offset, FindClosestEnemy(newClone.transform), canDuplicateClone, changeToDuplicate, player, attackMultiplier);
+        // Klonu kur
+        cloneController.SetupClone(_clonePosition, cloneDuration, canAttack,
+            _offset, FindClosestEnemy(newClone.transform), canDuplicateClone,
+            changeToDuplicate, player, attackMultiplier);
+
+        // Düþmana doðru yönlendir (HEMEN çalýþsýn diye burada çaðýrýyoruz)
+        cloneController.FaceClosestTarget();
     }
+
     public void CreateCloneWithDelay(Transform _enemyTransform)
     {
-        StartCoroutine(CloneDelayCoroutine(_enemyTransform, new Vector3(2 * player.facingDir, 0)));
+        // Düþmanýn tam karþýsýnda (0.8f mesafede) oluþtur
+        Vector3 offset = new Vector3(0.8f * player.facingDir, 0.2f);
+        StartCoroutine(CloneDelayCoroutine(_enemyTransform, offset));
     }
+
     private IEnumerator CloneDelayCoroutine(Transform _transform, Vector3 _offset)
     {
         yield return new WaitForSeconds(.4f);

@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 public class UI_StatSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private UI ui;
+    private Player_Stats playerStats;
+    private Color baseColor = new Color(255, 247, 119, 255);
 
     [SerializeField] private string statName;
     [SerializeField] private StatType statType;
@@ -28,15 +30,16 @@ public class UI_StatSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     void Start()
     {
-        UpdateStatValueUI();
-
         ui = GetComponentInParent<UI>();
-        if (ui == null)
-        {
-            Debug.LogError("UI component not found in parent.");
-        }
-    }
+        playerStats = PlayerManager.instance.player.GetComponent<Player_Stats>();
 
+        if (statType == StatType.health)
+        {
+            playerStats.OnHealthChanged += UpdateStatValueUI;
+        }
+
+        UpdateStatValueUI();
+    }
 
     public void UpdateStatValueUI()
     {
@@ -50,7 +53,7 @@ public class UI_StatSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         switch (statType)
         {
             case StatType.health:
-                statValueText.text = playerStats.GetMaxHealthValue().ToString();
+                statValueText.text = playerStats.currentHealth.ToString() + " / " + playerStats.GetMaxHealthValue().ToString();
                 break;
             case StatType.damage:
                 statValueText.text = (playerStats.damage.GetValue() + playerStats.strength.GetValue()).ToString();
@@ -72,7 +75,6 @@ public class UI_StatSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 break;
         }
     }
-
 
     public void OnPointerEnter(PointerEventData eventData)
     {

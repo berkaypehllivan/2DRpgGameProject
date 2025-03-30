@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player_Stats : Character_Stats
 {
+    public event System.Action OnHealthChanged;
 
     private Player player;
     [SerializeField] private float cooldown;
@@ -36,7 +37,7 @@ public class Player_Stats : Character_Stats
 
         cooldown = 1;
 
-        AudioManager.instance.PlaySFX(1, null);
+        AudioManager.instance.PlaySFX(17, null);
 
         player.fx.ScreenShake(player.fx.shakeDamageImpact);
 
@@ -64,6 +65,8 @@ public class Player_Stats : Character_Stats
     protected override void DecreaseHealthBy(int _damage)
     {
         base.DecreaseHealthBy(_damage);
+
+        OnHealthChanged?.Invoke();
 
         if (_damage > GetMaxHealthValue() * .3f)
         {

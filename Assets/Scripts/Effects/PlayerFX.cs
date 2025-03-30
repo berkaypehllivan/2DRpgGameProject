@@ -16,7 +16,9 @@ public class PlayerFX : EntityFX
     public Vector3 shakeDamageImpact;
     public Vector3 shakeHighImpact;
     [Space]
-    [SerializeField] private ParticleSystem dustFX;
+    [SerializeField] private ParticleSystem swordDustFx;
+    [SerializeField] private ParticleSystem movementDustFx;
+    [SerializeField] private ParticleSystem jumpDustFx;
 
     protected override void Start()
     {
@@ -46,9 +48,13 @@ public class PlayerFX : EntityFX
         }
     }
 
-    public void PlayDustFX()
+    public void PlayMovementDustFx() => movementDustFx.Play();
+
+    public void PlayJumpDustFx() => jumpDustFx.Play();
+
+    public void PlaySwordDustFX()
     {
-        if (dustFX != null)
-            dustFX.Play();
+        if (swordDustFx != null)
+            swordDustFx.Play();
     }
 }

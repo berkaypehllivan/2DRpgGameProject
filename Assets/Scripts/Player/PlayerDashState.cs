@@ -12,11 +12,14 @@ public class PlayerDashState : PlayerState
     {
         base.Enter();
 
-        AudioManager.instance.PlaySFX(4, null);
+        AudioManager.instance.PlaySFX(11, null);
 
         player.skill.dash.CloneOnDash();
         player.skill.dash.InvincibleDash();
         stateTimer = player.dashDuration;
+
+        if (player.IsGroundDetected())
+            player.fx.PlayMovementDustFx();
 
     }
 
@@ -26,7 +29,11 @@ public class PlayerDashState : PlayerState
 
         player.skill.dash.CloneOnArrival();
         player.col.isTrigger = false;
-        player.SetVelocity(0, rb.velocity.y);
+
+        player.SetVelocity(rb.velocity.x, rb.velocity.y);
+
+        if (!player.IsGroundDetected())
+            player.SetVelocity(0f, rb.velocity.y);
     }
 
     public override void Update()

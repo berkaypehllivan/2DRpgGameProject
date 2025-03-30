@@ -17,7 +17,7 @@ public class UI_ItemToolTip : UI_ToolTip
             return;
 
         itemNameText.text = item.itemName;
-        itemTypeText.text = item.equipmentType.ToString();
+        itemTypeText.text = item.GetEquipmentType();
         itemDescription.text = item.GetDescription();
 
         AdjustFontSize(itemNameText);

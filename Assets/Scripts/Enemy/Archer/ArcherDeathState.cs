@@ -15,7 +15,7 @@ public class ArcherDeathState : EnemyState
 
         stateTimer = 4f;
 
-        AudioManager.instance.PlaySFX(20, null);
+        AudioManager.instance.PlaySFX(5, null);
 
     }
 

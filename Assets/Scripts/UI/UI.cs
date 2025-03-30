@@ -8,10 +8,14 @@ using UnityEngine.SceneManagement;
 public class UI : MonoBehaviour, ISaveManager
 {
 
+    [Header("UI Sounds")]
+    [SerializeField] private AudioClip menuOpenSound;
+
     [Header("End Screen")]
     [SerializeField] private GameObject endText;
     [SerializeField] private GameObject restartButton;
     [SerializeField] private UI_FadeScreen fadeScreen;
+
     [Space]
 
     [SerializeField] private GameObject characterUI;
@@ -31,6 +35,12 @@ public class UI : MonoBehaviour, ISaveManager
     {
         SwitchTo(skillTreeUI);
         fadeScreen.gameObject.SetActive(true);
+
+        if (fadeScreen == null)
+            Debug.LogError("FadeScreen reference missing in UI!");
+
+        if (InGameUI == null)
+            Debug.LogError("InGameUI reference missing in UI!");
     }
 
     private void Start()
@@ -38,6 +48,9 @@ public class UI : MonoBehaviour, ISaveManager
         SwitchTo(InGameUI);
         itemToolTip.gameObject.SetActive(false);
         statToolTip.gameObject.SetActive(false);
+
+        GameData data = SaveManager.instance.dataHandler.Load();
+        LoadData(data);
     }
 
     private void Update()
@@ -60,14 +73,17 @@ public class UI : MonoBehaviour, ISaveManager
         for (int i = 0; i < transform.childCount; i++)
         {
             bool fadeScreen = transform.GetChild(i).GetComponent<UI_FadeScreen>() != null;
-
             if (!fadeScreen)
                 transform.GetChild(i).gameObject.SetActive(false);
         }
 
         if (_menu != null)
         {
-            AudioManager.instance.PlaySFX(7, null);
+            // Ses kontrolü ile
+            if (menuOpenSound != null && AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySwitchSFX(menuOpenSound); // Yeni metod ekleyeceðiz
+            }
             _menu.SetActive(true);
         }
 
@@ -119,23 +135,31 @@ public class UI : MonoBehaviour, ISaveManager
 
     public void LoadData(GameData _data)
     {
+        if (_data == null)
+        {
+            Debug.Log("Kayýt Dosyasý Bulunamadý.");
+            return;
+        }
         foreach (KeyValuePair<string, float> pair in _data.volumeSettings)
         {
             foreach (UI_VolumeSlider item in volumeSettings)
             {
                 if (item.parametr == pair.Key)
-                    item.LoadSLider(pair.Value);
+                {
+                    item.LoadSlider(pair.Value);
+                    break; // Eþleþme bulundu, diðerlerine bakmaya gerek yok
+                }
             }
         }
     }
 
     public void SaveData(GameData _data)
     {
-        _data.volumeSettings.Clear();
 
         foreach (UI_VolumeSlider item in volumeSettings)
         {
-            _data.volumeSettings.Add(item.parametr, item.slider.value);
+            if (item.slider != null)
+                _data.volumeSettings[item.parametr] = item.slider.value;
         }
     }
 

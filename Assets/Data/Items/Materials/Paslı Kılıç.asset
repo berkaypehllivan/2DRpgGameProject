@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: "Pasl\u0131 K\u0131l\u0131\xE7"
   itemIcon: {fileID: 21300000, guid: f4d24252dd6dfab47b91568d51e7eabb, type: 3}
   itemId: 9307303341345534fb56d7ce2e856e40
-  dropChance: 80
+  dropChance: 70

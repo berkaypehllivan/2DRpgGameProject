@@ -12,6 +12,8 @@ public class Enemy : Entity
 {
     [HideInInspector] public EnemySkeleton skeleton;
     [HideInInspector] public Enemy_Slime slime;
+    public bool hasHotKey = false;
+    public bool isFrozen = false;
 
     [Header("Stunned Info")]
     public float stunDuration = 1;
@@ -62,6 +64,12 @@ public class Enemy : Entity
         base.Update();
 
         stateMachine.currentState.Update();
+
+        if (Input.GetKeyDown(KeyCode.K))
+            FreezeTime(true);
+
+        if (Input.GetKeyDown(KeyCode.L))
+            FreezeTime(false);
     }
 
     public override void SlowEntityBy(float _slowPercentage, float _slowDuration)
@@ -88,11 +96,13 @@ public class Enemy : Entity
         {
             moveSpeed = 0;
             anim.speed = 0;
+            isFrozen = true;
         }
         else
         {
             moveSpeed = defaultMoveSpeed;
             anim.speed = 1;
+            isFrozen = false;
         }
     }
 

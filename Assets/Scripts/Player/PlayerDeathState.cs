@@ -17,7 +17,7 @@ public class PlayerDeathState : PlayerState
     {
         base.Enter();
 
-        AudioManager.instance.PlaySFX(26, null);
+        AudioManager.instance.PlaySFX(12, null);
 
         GameObject.Find("Canvas").GetComponent<UI>().SwitchOnEndScreen();
 

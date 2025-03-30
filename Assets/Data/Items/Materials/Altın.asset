@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: "Alt\u0131n"
   itemIcon: {fileID: 21300000, guid: a23f44033a609bf43b2525947b950ea3, type: 3}
   itemId: 5d24d0efbd0389649a6c3dc59e381754
-  dropChance: 70
+  dropChance: 30

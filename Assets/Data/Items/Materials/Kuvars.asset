@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: Kuvars
   itemIcon: {fileID: 21300000, guid: 04ec4e680bfc92443b0a059f3e06c467, type: 3}
   itemId: 4c0e35b7d0ca11042ae2ef7cf5fe7869
-  dropChance: 70
+  dropChance: 40

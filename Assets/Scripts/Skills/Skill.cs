@@ -39,7 +39,8 @@ public class Skill : MonoBehaviour
             cooldownTimer = cooldown;
             return true;
         }
-        player.fx.CreatePopUpText("Cooldown");
+        AudioManager.instance.PlaySFX(26, null);
+        player.fx.CreatePopUpText("Henüz deðil!");
         return false;
     }
 

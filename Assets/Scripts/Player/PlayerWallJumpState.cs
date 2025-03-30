@@ -12,11 +12,13 @@ public class PlayerWallJumpState : PlayerState
     {
         base.Enter();
 
-        AudioManager.instance.PlaySFX(34, null);
+        AudioManager.instance.PlaySFX(13, null);
 
         stateTimer = .4f;
         player.SetVelocity(5 * -player.facingDir, player.jumpForce);
         player.DoubleJump = false;
+
+        player.fx.PlayJumpDustFx();
     }
 
     public override void Exit()

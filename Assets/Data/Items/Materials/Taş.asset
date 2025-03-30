@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: "Ta\u015F"
   itemIcon: {fileID: -104826009, guid: be55291aae08d434db3da3b59db3ab4a, type: 3}
   itemId: 35acb0413566402458eebeda2430a47e
-  dropChance: 90
+  dropChance: 70

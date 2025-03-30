@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: Odun
   itemIcon: {fileID: -1500107966, guid: be55291aae08d434db3da3b59db3ab4a, type: 3}
   itemId: b5629aacc7b328349818dc32d0b66944
-  dropChance: 90
+  dropChance: 70

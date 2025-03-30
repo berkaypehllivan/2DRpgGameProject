@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: "Par\u015F\xF6men"
   itemIcon: {fileID: 21300000, guid: 883e6b9064561164d9daefcc25fb3652, type: 3}
   itemId: cd4eac6289fbbfd40adc47ca9145ed49
-  dropChance: 50
+  dropChance: 60

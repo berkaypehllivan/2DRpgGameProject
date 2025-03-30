@@ -61,7 +61,7 @@ public class Enemy_Stats : Character_Stats
     {
         base.TakeDamage(_damage);
 
-        AudioManager.instance.PlaySFX(3, null);
+        AudioManager.instance.PlaySFX(16, null);
 
         healthBarUI.canvasGroup.alpha = 1;
     }

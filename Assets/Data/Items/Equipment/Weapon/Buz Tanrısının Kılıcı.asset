@@ -33,7 +33,7 @@ MonoBehaviour:
   evasion: 10
   magicResistance: 0
   fireDamage: 0
-  iceDamage: 0
+  iceDamage: 5
   lightingDamage: 0
   craftingMaterials:
   - data: {fileID: 11400000, guid: 511f6e21b67e82a43a1d0dd4402b59d5, type: 2}

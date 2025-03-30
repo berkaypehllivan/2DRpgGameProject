@@ -7,6 +7,7 @@ using UnityEngine;
 public class Inventory : MonoBehaviour, ISaveManager
 {
     public static Inventory instance;
+    private Player player;
 
     public List<ItemData> startingItems;
 
@@ -14,15 +15,12 @@ public class Inventory : MonoBehaviour, ISaveManager
     public Dictionary<ItemData_Equipment, InventoryItem> equipmentDictionary;
 
     public List<InventoryItem> inventory;
-    public Dictionary<ItemData, InventoryItem> inventoryDictianory;
-
     public List<InventoryItem> stash;
-    public Dictionary<ItemData, InventoryItem> stashDictianory;
 
-
+    public Dictionary<ItemData, InventoryItem> inventoryDictionary;
+    public Dictionary<ItemData, InventoryItem> stashDictionary;
 
     [Header("Inventory UI")]
-
     [SerializeField] private Transform inventorySlotParent;
     [SerializeField] private Transform stashSlotParent;
     [SerializeField] private Transform equipmentSlotParent;
@@ -44,21 +42,27 @@ public class Inventory : MonoBehaviour, ISaveManager
     public List<ItemData> itemDataBase;
     public List<InventoryItem> loadedItems;
     public List<ItemData_Equipment> loadedEquipment;
+
     private void Awake()
     {
         if (instance == null)
             instance = this;
         else
             Destroy(gameObject);
+
+        stash = new List<InventoryItem>();
+        stashDictionary = new Dictionary<ItemData, InventoryItem>();
     }
 
     private void Start()
     {
+        player = PlayerManager.instance.player;
+
         inventory = new List<InventoryItem>();
-        inventoryDictianory = new Dictionary<ItemData, InventoryItem>();
+        inventoryDictionary = new Dictionary<ItemData, InventoryItem>();
 
         stash = new List<InventoryItem>();
-        stashDictianory = new Dictionary<ItemData, InventoryItem>();
+        stashDictionary = new Dictionary<ItemData, InventoryItem>();
 
         equipment = new List<InventoryItem>();
         equipmentDictionary = new Dictionary<ItemData_Equipment, InventoryItem>();
@@ -119,7 +123,7 @@ public class Inventory : MonoBehaviour, ISaveManager
             AddItem(oldEquipment);
         }
 
-        AudioManager.instance.PlaySFX(23, null);
+        AudioManager.instance.PlaySFX(7, null);
         equipment.Add(newItem);
         equipmentDictionary.Add(newEquipment, newItem);
         newEquipment.AddModifiers();
@@ -133,15 +137,26 @@ public class Inventory : MonoBehaviour, ISaveManager
     {
         if (equipmentDictionary.TryGetValue(itemToRemove, out InventoryItem value))
         {
-            AudioManager.instance.PlaySFX(24, null);
+            AudioManager.instance.PlaySFX(8, null);
             equipment.Remove(value);
             equipmentDictionary.Remove(itemToRemove);
             itemToRemove.RemoveModifiers();
+            Debug.Log("Unequip baþarýlý: " + itemToRemove.name); // Log ekleyin
         }
     }
 
     private void UpdateSlotUI()
     {
+        foreach (var slot in equipmentSlot)
+            slot.CleanUpSlot();
+
+        foreach (var item in equipmentDictionary)
+        {
+            var targetSlot = System.Array.Find(equipmentSlot, x => x.slotType == item.Key.equipmentType);
+            if (targetSlot != null)
+                targetSlot.UpdateSlot(item.Value);
+        }
+
         for (int i = 0; i < equipmentSlot.Length; i++)
         {
             foreach (KeyValuePair<ItemData_Equipment, InventoryItem> item in equipmentDictionary)
@@ -197,7 +212,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     private void AddToStash(ItemData _item)
     {
-        if (stashDictianory.TryGetValue(_item, out InventoryItem value))
+        if (stashDictionary.TryGetValue(_item, out InventoryItem value))
         {
             value.AddStack();
         }
@@ -205,13 +220,13 @@ public class Inventory : MonoBehaviour, ISaveManager
         {
             InventoryItem newItem = new InventoryItem(_item);
             stash.Add(newItem);
-            stashDictianory.Add(_item, newItem);
+            stashDictionary.Add(_item, newItem);
         }
     }
 
     private void AddToInventory(ItemData _item)
     {
-        if (inventoryDictianory.TryGetValue(_item, out InventoryItem value))
+        if (inventoryDictionary.TryGetValue(_item, out InventoryItem value))
         {
             value.AddStack();
         }
@@ -219,30 +234,30 @@ public class Inventory : MonoBehaviour, ISaveManager
         {
             InventoryItem newItem = new InventoryItem(_item);
             inventory.Add(newItem);
-            inventoryDictianory.Add(_item, newItem);
+            inventoryDictionary.Add(_item, newItem);
         }
     }
 
     public void RemoveItem(ItemData _item)
     {
-        if (inventoryDictianory.TryGetValue(_item, out InventoryItem value))
+        if (inventoryDictionary.TryGetValue(_item, out InventoryItem value))
         {
             if (value.stackSize <= 1)
             {
                 inventory.Remove(value);
-                inventoryDictianory.Remove(_item);
+                inventoryDictionary.Remove(_item);
             }
             else
                 value.RemoveStack();
         }
 
 
-        if (stashDictianory.TryGetValue(_item, out InventoryItem stashValue))
+        if (stashDictionary.TryGetValue(_item, out InventoryItem stashValue))
         {
             if (stashValue.stackSize <= 1)
             {
                 stash.Remove(stashValue);
-                stashDictianory.Remove(_item);
+                stashDictionary.Remove(_item);
             }
             else
                 stashValue.RemoveStack();
@@ -263,39 +278,28 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     public bool CanCraft(ItemData_Equipment _itemToCraft, List<InventoryItem> _requiredMaterials)
     {
-        List<InventoryItem> materialsToRemove = new List<InventoryItem>();
-
-        for (int i = 0; i < _requiredMaterials.Count; i++)
+        // 1. Malzeme kontrolü (stashDictionary kullanarak)
+        foreach (InventoryItem material in _requiredMaterials)
         {
-            if (stashDictianory.TryGetValue(_requiredMaterials[i].data, out InventoryItem stashValue))
+            if (!stashDictionary.TryGetValue(material.data, out InventoryItem stashValue) ||
+                stashValue.stackSize < material.stackSize)
             {
-                if (stashValue.stackSize < _requiredMaterials[i].stackSize)
-                {
-                    Debug.Log("Not enough materials");
-                    return false;
-                }
-                else
-                {
-                    materialsToRemove.Add(stashValue);
-                }
-
-            }
-            else
-            {
-                Debug.Log("Materials not found");
+                Debug.Log("Yeterli malzeme yok: " + material.data.itemName);
                 return false;
             }
         }
 
-
-        for (int i = 0; i < materialsToRemove.Count; i++)
+        // 2. Malzemeleri düþür
+        foreach (InventoryItem material in _requiredMaterials)
         {
-            RemoveItem(materialsToRemove[i].data);
+            for (int i = 0; i < material.stackSize; i++)
+            {
+                RemoveItem(material.data); // Her birim için RemoveItem çaðýr
+            }
         }
 
+        // 3. Eþyayý ekle
         AddItem(_itemToCraft);
-        Debug.Log("Here is your item " + _itemToCraft.name);
-
         return true;
     }
 
@@ -318,21 +322,60 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     public void UseFlask()
     {
-        ItemData_Equipment currentFlask = GetEquipment(EquipmentType.Flask);
+        ItemData_Equipment currentFlask = FindFlaskInInventory() ?? GetEquipment(EquipmentType.Flask);
 
         if (currentFlask == null)
-            return;
-
-        bool canUseFlask = Time.time > lastTimeUsedFlask + flaskCooldown;
-
-        if (canUseFlask)
         {
-            flaskCooldown = currentFlask.itemCooldown;
-            currentFlask.Effect(null);
-            lastTimeUsedFlask = Time.time;
+            AudioManager.instance.PlaySFX(26, null);
+            player.fx.CreatePopUpText("Flask Yok!");
+            return;
         }
-        else
-            Debug.Log("Flask on cooldown;");
+
+        if (Time.time < lastTimeUsedFlask + currentFlask.itemCooldown)
+        {
+            float remainingCooldown = (lastTimeUsedFlask + currentFlask.itemCooldown) - Time.time;
+            //Debug.Log($"Flask cooldown'da! Kullanýlabilmesine {remainingCooldown.ToString("F1")} saniye kaldý.");
+            player.fx.CreatePopUpText("Henüz Deðil!");
+            AudioManager.instance.PlaySFX(26, null);
+            return;
+        }
+
+        if (player.stats.currentHealth == player.stats.maxHealth.GetValue())
+        {
+            AudioManager.instance.PlaySFX(26, null);
+            player.fx.CreatePopUpText("Saðlýk Zaten Dolu!");
+            return;
+        }
+
+        UI_InGame.instance.StartFlaskCooldown();
+
+        AudioManager.instance.PlaySFX(25, null);
+        currentFlask.Effect(null);
+        lastTimeUsedFlask = Time.time;
+
+        bool wasEquipped = equipmentDictionary.ContainsKey(currentFlask);
+
+        if (wasEquipped && !inventoryDictionary.ContainsKey(currentFlask))
+        {
+            UnequipItem(currentFlask);
+            Debug.Log("Flask equipment'ten kaldýrýldý");
+        }
+
+        RemoveItem(currentFlask);
+        Debug.Log("Flask envanterden silindi");
+
+        // 6. UI güncelle
+        UpdateSlotUI();
+    }
+
+    public ItemData_Equipment FindFlaskInInventory()
+    {
+        foreach (var item in inventoryDictionary.Keys)
+        {
+            if (item is ItemData_Equipment equipment && equipment.equipmentType == EquipmentType.Flask)
+                return equipment;
+        }
+        return null;
     }
 
     public bool CanUseArmor()
@@ -384,12 +427,12 @@ public class Inventory : MonoBehaviour, ISaveManager
         _data.inventory.Clear();
         _data.equipmentId.Clear();
 
-        foreach (KeyValuePair<ItemData, InventoryItem> pair in inventoryDictianory)
+        foreach (KeyValuePair<ItemData, InventoryItem> pair in inventoryDictionary)
         {
             _data.inventory.Add(pair.Key.itemId, pair.Value.stackSize);
         }
 
-        foreach (KeyValuePair<ItemData, InventoryItem> pair in stashDictianory)
+        foreach (KeyValuePair<ItemData, InventoryItem> pair in stashDictionary)
         {
             _data.inventory.Add(pair.Key.itemId, pair.Value.stackSize);
         }
@@ -399,7 +442,6 @@ public class Inventory : MonoBehaviour, ISaveManager
             _data.equipmentId.Add(pair.Key.itemId);
         }
     }
-
 
 
 #if UNITY_EDITOR

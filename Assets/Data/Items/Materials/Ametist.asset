@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: Ametist
   itemIcon: {fileID: 21300000, guid: 3875babbefc18c64896e8540bd74c877, type: 3}
   itemId: 714f33170014e084a9e9ea90aae6cb20
-  dropChance: 50
+  dropChance: 20

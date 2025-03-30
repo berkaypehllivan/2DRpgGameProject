@@ -61,7 +61,7 @@ public class Sword_Skill_Controller : MonoBehaviour
 
         spinDirection = Mathf.Clamp(rb.velocity.x, -1, 1);
 
-        AudioManager.instance.PlaySFX(18, null);
+        AudioManager.instance.PlaySFX(2, null);
         Invoke("DestroyMe", 7);
     }
 
@@ -86,9 +86,10 @@ public class Sword_Skill_Controller : MonoBehaviour
         spinDuration = _spinDuration;
         hitCooldown = _hitCooldown;
     }
+
     public void ReturnSword()
     {
-        AudioManager.instance.PlaySFX(17, null);
+        AudioManager.instance.PlaySFX(3, null);
         anim.SetBool("Rotation", true);
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         transform.parent = null;

@@ -24,17 +24,34 @@ public class ItemObject : MonoBehaviour
         SetupVisuals();
     }
 
+    private static bool hasShownPopupThisTrigger = false; // Tüm itemler için ortak olacak
+
     public void PickupItem()
     {
-        if (!Inventory.instance.CanAddItem() && itemData.itemType == ItemType.Equipment)
+        if (Inventory.instance.CanAddItem() == false || itemData.itemType == ItemType.Equipment)
         {
+            if (!hasShownPopupThisTrigger)
+            {
+                hasShownPopupThisTrigger = true;
+                PlayerManager.instance.player.fx.CreatePopUpText("Envanter Dolu!");
+
+                // Popup'ý sadece belli bir süre sonra tekrar göstermeye izin veriyoruz
+                StartCoroutine(ResetPopupFlag());
+            }
+
             rb.velocity = new Vector2(0, 7);
-            PlayerManager.instance.player.fx.CreatePopUpText("Inventory is full");
             return;
         }
 
-        AudioManager.instance.PlaySFX(10, transform);
+        AudioManager.instance.PlaySFX(9, transform);
         Inventory.instance.AddItem(itemData);
         Destroy(gameObject);
     }
+
+    private IEnumerator ResetPopupFlag()
+    {
+        yield return new WaitForSeconds(0.5f); // 0.5 saniye bekleyerek tekrar açýlmasýný saðlýyoruz
+        hasShownPopupThisTrigger = false;
+    }
+
 }

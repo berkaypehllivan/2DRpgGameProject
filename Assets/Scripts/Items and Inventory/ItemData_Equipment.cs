@@ -15,7 +15,6 @@ public class ItemData_Equipment : ItemData
 {
     public EquipmentType equipmentType;
 
-
     [Header("Unique Effects")]
     public float itemCooldown;
     public ItemEffect[] itemEffects;
@@ -101,28 +100,45 @@ public class ItemData_Equipment : ItemData
         playerStats.lightingDamage.RemoveModifier(lightingDamage);
     }
 
+    public string GetEquipmentType()
+    {
+        switch (equipmentType)
+        {
+            case EquipmentType.Weapon:
+                return "Kýlýç";
+            case EquipmentType.Armor:
+                return "Zýrh";
+            case EquipmentType.Amulet:
+                return "Týlsým";
+            case EquipmentType.Flask:
+                return "Ýksir";
+            default:
+                return "Bilinmeyen";
+        }
+    }
+
     public override string GetDescription()
     {
         sb.Length = 0;
         descriptionLength = 0;
 
-        AddItemDescription(strength, "Strength");
-        AddItemDescription(agility, "Agility");
-        AddItemDescription(intelligence, "Intelligence");
-        AddItemDescription(vitality, "Vitality");
+        AddItemDescription(strength, "Güç");
+        AddItemDescription(agility, "Çeviklik");
+        AddItemDescription(intelligence, "Zeka");
+        AddItemDescription(vitality, "Canlýlýk");
 
-        AddItemDescription(damage, "Damage");
-        AddItemDescription(critChange, "CritChange");
-        AddItemDescription(critPower, "CritPower");
+        AddItemDescription(damage, "Hasar");
+        AddItemDescription(critChange, "Krt. Þansý");
+        AddItemDescription(critPower, "Krt. Gücü");
 
-        AddItemDescription(health, "Health");
-        AddItemDescription(armor, "Armor");
-        AddItemDescription(evasion, "Evasion");
-        AddItemDescription(magicResistance, "MagicResistance");
+        AddItemDescription(health, "Saðlýk");
+        AddItemDescription(armor, "Zýrh");
+        AddItemDescription(evasion, "Kaçýnma");
+        AddItemDescription(magicResistance, "Büyü Direnci");
 
-        AddItemDescription(fireDamage, "FireDamage");
-        AddItemDescription(iceDamage, "IceDamage");
-        AddItemDescription(lightingDamage, "LightingDamage");
+        AddItemDescription(fireDamage, "Ateþ Hasarý");
+        AddItemDescription(iceDamage, "Buz Hasarý");
+        AddItemDescription(lightingDamage, "Yýldýrým Hasarý");
 
         for (int i = 0; i < itemEffects.Length; i++)
         {
@@ -131,7 +147,7 @@ public class ItemData_Equipment : ItemData
                 if (itemEffects[i].effectDescription.Length > 0)
                 {
                     sb.AppendLine();
-                    sb.AppendLine("Unique: " + itemEffects[i].effectDescription);
+                    sb.AppendLine("<color=#FFBF00>Epik:</color> " + itemEffects[i].effectDescription);
                     descriptionLength++;
                 }
             }

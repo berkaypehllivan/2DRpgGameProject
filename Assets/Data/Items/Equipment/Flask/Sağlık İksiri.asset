@@ -18,7 +18,7 @@ MonoBehaviour:
   itemId: e41a336473d6264469a5289d512f80ea
   dropChance: 0
   equipmentType: 3
-  itemCooldown: 15
+  itemCooldown: 2
   itemEffects:
   - {fileID: 11400000, guid: a3fc4263c9a7fef46b68c8b80f38d350, type: 2}
   strength: 0
@@ -28,7 +28,7 @@ MonoBehaviour:
   damage: 0
   critChange: 0
   critPower: 0
-  health: 40
+  health: 0
   armor: 0
   evasion: 0
   magicResistance: 0
@@ -36,7 +36,5 @@ MonoBehaviour:
   iceDamage: 0
   lightingDamage: 0
   craftingMaterials:
-  - data: {fileID: 11400000, guid: cae227cb2e149394d870c943f54a7f30, type: 2}
-    stackSize: 1
   - data: {fileID: 11400000, guid: 74fdb9af9444fa445b9d992a99a73a97, type: 2}
-    stackSize: 5
+    stackSize: 2

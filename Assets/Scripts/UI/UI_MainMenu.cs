@@ -12,6 +12,8 @@ public class UI_MainMenu : MonoBehaviour
     {
         if (SaveManager.instance.HasSavedData() == false)
             continueButton.SetActive(false);
+
+        AudioManager.instance.PlayMenuMusic();
     }
 
     public void ContinueGame()

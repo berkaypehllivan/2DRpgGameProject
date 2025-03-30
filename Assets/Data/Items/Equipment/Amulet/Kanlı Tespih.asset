@@ -19,8 +19,7 @@ MonoBehaviour:
   dropChance: 0
   equipmentType: 2
   itemCooldown: 0
-  itemEffects:
-  - {fileID: 11400000, guid: 14964be10a1eb434488a14351c8afe69, type: 2}
+  itemEffects: []
   strength: 5
   agility: 5
   intelligence: 0
@@ -32,7 +31,7 @@ MonoBehaviour:
   armor: 0
   evasion: 0
   magicResistance: 0
-  fireDamage: 0
+  fireDamage: 10
   iceDamage: 0
   lightingDamage: 0
   craftingMaterials:

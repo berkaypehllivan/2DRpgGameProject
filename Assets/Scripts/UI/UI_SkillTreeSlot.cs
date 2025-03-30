@@ -44,13 +44,13 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
         if (unlocked)
         {
             Debug.Log("Skill slot already unlocked");
-            AudioManager.instance.PlaySFX(22, null);
+            AudioManager.instance.PlaySFX(20, null);
             return;
         }
 
         if (PlayerManager.instance.HaveEnoughMoney(skillCost) == false)
         {
-            AudioManager.instance.PlaySFX(22, null);
+            AudioManager.instance.PlaySFX(20, null);
             return;
         }
 
@@ -58,7 +58,7 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             if (shouldBeUnlocked[i].unlocked == false)
             {
-                AudioManager.instance.PlaySFX(22, null);
+                AudioManager.instance.PlaySFX(20, null);
                 Debug.Log("Cannot unlock skill");
                 return;
             }
@@ -69,13 +69,13 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             if (shouldBeLocked[i].unlocked == true)
             {
-                AudioManager.instance.PlaySFX(22, null);
+                AudioManager.instance.PlaySFX(20, null);
                 Debug.Log("Cannot unlock skill");
                 return;
             }
         }
 
-        AudioManager.instance.PlaySFX(25, null);
+        AudioManager.instance.PlaySFX(19, null);
         unlocked = true;
         skillImage.color = Color.white;
     }

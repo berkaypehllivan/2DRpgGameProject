@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45eec9634c65835428b6f4b9d3132b6f, type: 3}
   m_Name: "\xC7elik Z\u0131rh"
   m_EditorClassIdentifier: 
-  itemType: 0
+  itemType: 1
   itemName: "\xC7elik Z\u0131rh"
   itemIcon: {fileID: -965925972, guid: be55291aae08d434db3da3b59db3ab4a, type: 3}
   itemId: 0f5dd6f32f1abc4478e0163fa8531fbf

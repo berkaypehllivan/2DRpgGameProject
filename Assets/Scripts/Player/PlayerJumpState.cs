@@ -14,7 +14,9 @@ public class PlayerJumpState : PlayerState
     {
         base.Enter();
         rb.velocity = new Vector2(rb.velocity.x, player.jumpForce);
-        AudioManager.instance.PlaySFX(21, null);
+        AudioManager.instance.PlaySFX(13, null);
+
+        player.fx.PlayJumpDustFx();
     }
 
     public override void Exit()
@@ -43,7 +45,8 @@ public class PlayerJumpState : PlayerState
     {
         if (xInput != 0)
         {
-            rb.velocity = new Vector2(xInput * player.moveSpeed, rb.velocity.y);
+            float airControlFactor = 0.1f;
+            rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x, xInput * player.moveSpeed, airControlFactor), rb.velocity.y);
 
             if ((xInput > 0 && player.facingDir != 1) || (xInput < 0 && player.facingDir == 1))
                 player.Flip();

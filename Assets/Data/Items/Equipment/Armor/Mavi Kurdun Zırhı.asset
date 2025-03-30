@@ -28,8 +28,8 @@ MonoBehaviour:
   damage: 0
   critChange: 0
   critPower: 0
-  health: 0
-  armor: 20
+  health: 25
+  armor: 10
   evasion: 0
   magicResistance: 0
   fireDamage: 0

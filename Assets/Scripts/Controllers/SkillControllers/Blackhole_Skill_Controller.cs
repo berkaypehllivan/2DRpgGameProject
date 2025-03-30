@@ -97,18 +97,24 @@ public class Blackhole_Skill_Controller : MonoBehaviour
             cloneAttackTimer = cloneAttackCooldown;
 
             int randomIndex = Random.Range(0, targets.Count);
+            Transform target = targets[randomIndex];
 
-            float xOffset = (Random.Range(0, 100) > 50) ? 1.5f : -1.5f;
+            // Düþmanýn tam karþýsýnda ve biraz uzaðýnda oluþtur
+            float xDirection = Random.Range(0, 2) == 0 ? -1 : 1; // -1 veya 1
+            float xDistance = Random.Range(0.8f, 1.2f);
+            Vector3 offset = new Vector3(xDistance * xDirection, 0.2f, 0);
+
             if (SkillManager.instance.clone.crystalInsteadOfClone)
             {
                 SkillManager.instance.crystal.CreateCrystal();
                 SkillManager.instance.crystal.CurrentCrystalChooseRandomTarget();
+                amountOfAttacks--;
             }
             else
-                SkillManager.instance.clone.CreateClone(targets[randomIndex], new Vector3(xOffset, 0));
-
-            amountOfAttacks--;
-
+            {
+                SkillManager.instance.clone.CreateClone(target, offset);
+                amountOfAttacks--;
+            }
 
             if (amountOfAttacks <= 0)
             {
@@ -142,10 +148,14 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<Enemy>() != null)
-        {
-            collision.GetComponent<Enemy>().FreezeTime(true);
+        // Sadece belirli bir layer'daki düþmanlarý algýla
+        if (collision.gameObject.layer != LayerMask.NameToLayer("Enemy"))
+            return;
 
+        Enemy enemy = collision.GetComponent<Enemy>();
+        if (enemy != null && !enemy.isFrozen) // Ek kontrol
+        {
+            enemy.FreezeTime(true);
             CreateHotKey(collision);
         }
     }
@@ -154,6 +164,11 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
     private void CreateHotKey(Collider2D collision)
     {
+        Enemy enemy = collision.GetComponent<Enemy>();
+        if (enemy == null || enemy.hasHotKey) return;
+
+        enemy.hasHotKey = true;
+
         if (keyCodeList.Count <= 0)
         {
             Debug.Log("Not enough hot keys in a key code list!");

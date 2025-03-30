@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: Obsidyen
   itemIcon: {fileID: 21300000, guid: 514b4fd47755002478c1356b27940add, type: 3}
   itemId: 627d896bdb8c47842866d1a69cb4addf
-  dropChance: 70
+  dropChance: 30

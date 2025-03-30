@@ -84,7 +84,7 @@ public class SwordSkill : Skill
         UnlockSword();
         UnlockBounceSword();
         UnlockPierceSword();
-        UnlockPierceSword();
+        UnlockSpinSword();
     }
 
     public override void UseSkill()

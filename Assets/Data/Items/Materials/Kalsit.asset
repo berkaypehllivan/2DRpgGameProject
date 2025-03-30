@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: Kalsit
   itemIcon: {fileID: 21300000, guid: 7f29f932cf2d9d0408883751d9a64730, type: 3}
   itemId: cb498a4b61ea98f4f88b4122c9d74f68
-  dropChance: 50
+  dropChance: 30
