@@ -1,4 +1,4 @@
-Build Link: https://drive.google.com/file/d/1RdWIY0h2gS_5gOYK6WXaU4TFYp5_0Nmd/view?usp=sharing
+Build Link: surl.be/j6hyyS
 
 ### [Watch this project gameplay video on YouTube](https://youtu.be/QVXG2g9C6ko)
 
